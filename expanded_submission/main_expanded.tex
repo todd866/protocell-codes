@@ -28,7 +28,7 @@ Sydney, NSW, Australia\\
 \begin{abstract}
 %==============================================================================
 %%% EXPANDED: Updated abstract with Lewis games and basin analysis %%%
-We address two fundamental questions in abiogenesis: (1) how did symbolic codes arise from continuous chemistry, and (2) why didn't early life homogenize into synchronous goo? We propose that both answers follow from coherence constraints. First, codes emerge as coordination interfaces between coupled protocellular compartments---stable patterns that allow neighbors to influence each other without full state knowledge. Substrate competition (lateral inhibition) drives winner-take-most dynamics that make continuous outputs reliably distinguishable. We validate this mechanism through two independent approaches: direct simulation of coupled compartments (98\% decoding accuracy) and Lewis signaling games where codes emerge from coordination pressure alone without external supervision. Second, coherence is metabolically expensive and scales superlinearly with group size, creating an inherent ceiling on coordination that generates predator-prey dynamics without specialized machinery. We connect our results to genetic code structure through basin analysis (degeneracy correlates with robustness, $r = 0.89$) and p-adic number theory, validating Khrennikov's formalism while identifying what our model cannot explain (the concentration of degeneracy at the wobble position). We propose that ecological dynamics may predate biological complexity, arising from physics before genetic encoding.
+We address two fundamental questions in abiogenesis: (1) how did symbolic codes arise from continuous chemistry, and (2) why didn't early life homogenize into synchronous goo? We propose that both answers follow from coherence constraints. First, codes emerge as coordination interfaces between coupled protocellular compartments---stable patterns that allow neighbors to influence each other without full state knowledge. Substrate competition (lateral inhibition) drives winner-take-most dynamics that make continuous outputs reliably distinguishable. We validate this mechanism through two independent approaches: direct simulation of coupled compartments (98\% decoding accuracy) and Lewis signaling games where codes emerge from coordination pressure alone without external supervision. Second, coherence is metabolically expensive and scales superlinearly with group size, creating an inherent ceiling on coordination that generates predator-prey dynamics without specialized machinery. We connect our results to genetic code structure through basin analysis (degeneracy correlates with robustness, $r = 0.80 \pm 0.08$, $n = 20$) and p-adic number theory, validating Khrennikov's formalism while identifying what our model cannot explain (the concentration of degeneracy at the wobble position). We propose that ecological dynamics may predate biological complexity, arising from physics before genetic encoding.
 \end{abstract}
 
 \medskip
@@ -143,7 +143,7 @@ The mechanism is prebiotically plausible. Substrate competition occurs naturally
 \textbf{Code Definition (Operational)}\\[0.5em]
 \textit{Code signal}: Each temporal cycle produces a 60-dimensional vector $\mathbf{c}_t = [\boldsymbol{\phi}_{\text{center}}; \boldsymbol{\phi}_{\text{edge}}]$ (30 center + 30 edge readout channels). The full 4-cycle codeword is the 240-dimensional concatenation $\mathbf{C} = [\mathbf{c}_1; \mathbf{c}_2; \mathbf{c}_3; \mathbf{c}_4]$, capturing both spatial pattern and temporal sequence.\\[0.3em]
 \textit{Decoder rule}: Nearest-centroid classification. Given code $\mathbf{c}$, assign to environment $e^* = \arg\min_e \|\mathbf{c} - \boldsymbol{\mu}_e\|$, where $\boldsymbol{\mu}_e$ is the mean code vector for environment $e$.\\[0.3em]
-\textit{Metrics}: Decoding accuracy $=$ fraction correctly classified; Separation ratio $= \bar{d}_{\text{between}} / \bar{d}_{\text{within}}$ in code space.\\[0.3em]
+\textit{Metrics}: Decoding accuracy $=$ fraction correctly classified; Separation ratio $= \bar{d}_{\text{between}} / \bar{d}_{\text{within}}$ in code space. We report two separation metrics: \textbf{Sep$_{\text{attractor}}$} (internal 128-D reservoir states) and \textbf{Sep$_{\text{interface}}$} (60-D boundary signals). The former measures internal discriminability; the latter measures what neighbors can observe.\\[0.3em]
 \textit{Note}: The code is a continuous chemical signal (concentration profile), not a discrete symbol sequence. Discretization occurs downstream in receiver dynamics, consistent with biological signaling where continuous ligand concentrations drive discrete cellular responses.}}
 \medskip
 
@@ -166,7 +166,7 @@ Figure~\ref{fig:architecture} illustrates the system architecture, showing the h
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_architecture.pdf}
-\caption{\textbf{Code emergence architecture.} (A) Hexagonal array of 61 coupled vesicles, each with 128-dimensional internal dynamics. Lines indicate neighbor coupling via boundary signals. (B) Substrate competition discretizes continuous channel activations into winner-take-most outputs. The equation shows the competitive normalization. (C) The system maps 32 environmental configurations (5-bit binary patterns) to 32 distinguishable 60-dimensional code vectors. The code is a continuous concentration profile, not a discrete symbol; discretization occurs in receiver dynamics. Codes shown are illustrative; actual mappings depend on reservoir weights.}
+\caption{\textbf{Code emergence architecture.} (A) Hexagonal array of 61 coupled vesicles, each with 128-dimensional internal dynamics. Lines indicate neighbor coupling via boundary signals. (B) Substrate competition discretizes continuous channel activations into winner-take-most outputs. The equation shows the competitive normalization. (C) The system maps 32 environmental configurations (5-bit binary patterns) to 32 distinguishable code vectors. Each temporal cycle produces a 60-D vector; the full 4-cycle codeword is 240-D (see Code Definition box). In all reported decoding results, we use the 240-D concatenated codeword. Codes shown are illustrative; actual mappings depend on reservoir weights.}
 \label{fig:architecture}
 \end{figure}
 
@@ -184,13 +184,16 @@ Metric & Result \\
 \midrule
 Unique input$\to$character mappings & 32/32 (no collisions) \\
 Reproducibility (20 seeds) & $98.4\% \pm 2.1\%$ \\
-Separation ratio (attractor space) & 335,000$\times$ \\
+Separation ratio$_{\text{attractor}}$ & 335,000$\times$ \\
 Env--Attractor correlation & 0.72 \\
-Bimodality (emergent discretization) & 89\% saturated \\
+Bimodality (emergent discretization) & 89\% saturated$^*$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
+\noindent{\footnotesize $^*$Bimodality metric: fraction of output channels where the activation distribution (across all environments) is bimodal rather than unimodal. ``Saturated'' means activations cluster near 0 or 1 rather than intermediate values. Measured via Hartigan's dip test; 89\% of channels show significant bimodality ($p < 0.05$).}
+
+\medskip
 The system reliably maps 32 environmental configurations to 32 distinguishable code vectors (separation ratio $>300\times$). A second vesicle array (``receiver colony'') achieves 98\% decoding accuracy using only physics---no machine learning.
 
 \textbf{Receiver specification}: We test two distinct receiver regimes to disentangle ``same chemistry'' from ``same individual'':
@@ -212,7 +215,7 @@ To demonstrate that code emergence requires the proposed mechanisms, we tested a
 \begin{center}
 \begin{tabular}{lrrr}
 \toprule
-\textbf{Condition} & \textbf{Unique Codes} & \textbf{Reproducibility} & \textbf{Sep. (attractor)} \\
+\textbf{Condition} & \textbf{Unique Codes} & \textbf{Reproducibility} & \textbf{Sep$_{\text{attractor}}$} \\
 \midrule
 Full model & 32/32 & 98.4\% & 335,000$\times$ \\
 No coupling ($\kappa = 0$) & 32/32 & 97.1\% & 68$\times$ \\
@@ -226,6 +229,8 @@ No mean-centering & 32/32 & 98.1\% & $>$10,000$\times$ \\
 \end{center}
 
 \textbf{Interpretation}: Substrate competition ($h > 1$) is \textit{essential}---without it, codes collapse to a handful of attractors with poor reproducibility. Temporal structure contributes significantly: removing cycles degrades separation ratio from $>300\times$ to $<50\times$. The system is robust to input noise and topology perturbations.
+
+\textbf{Note on coupling}: The $\kappa = 0$ condition still produces 32/32 unique codes because substrate competition alone discretizes local dynamics. However, coupling serves a different function: it creates \textit{shared} interfaces that receivers can decode. Without coupling, each compartment develops idiosyncratic codes; with coupling, codes become colony-level conventions. This is reflected in Sep$_{\text{interface}}$ (Table in Section 4.4), which drops from 343$\times$ to 68$\times$ at $\kappa = 0$. Coupling is not required for local discretization but is essential for inter-compartment coordination.
 
 \subsection{Information-Theoretic Capacity}
 
@@ -273,7 +278,7 @@ Unique codes & 32/32 & 32/32 \\
 $D_{\text{eff}}$ & 6.3 & 16.7 \\
 Env--Attractor correlation & 0.72 & 0.83 \\
 Reproducibility & 98.4\% & 84.2\% \\
-Separation (attractor) & 335,000$\times$ & 4.4$\times$ \\
+Sep$_{\text{attractor}}$ & 335,000$\times$ & 4.4$\times$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -303,7 +308,7 @@ Coupling increases effective dimensionality (see \cite{todd2026manifold} for the
 \begin{center}
 \begin{tabular}{rrr}
 \toprule
-Coupling $\kappa$ & $D_{\text{eff}}$ & Sep. (interface) \\
+Coupling $\kappa$ & $D_{\text{eff}}$ & Sep$_{\text{interface}}$ \\
 \midrule
 0.00 & 6.82 & 68$\times$ \\
 0.15 & 6.86 & 343$\times$ \\
@@ -321,7 +326,7 @@ Separation peaks at intermediate coupling---the regime where compartments influe
 \label{sec:lewis}
 %==============================================================================
 
-The substrate competition mechanism (Section 3) demonstrates \textit{how} codes can emerge. But a skeptic might ask: is this mechanism-specific, or is code emergence a generic outcome of coordination pressure? To address this, we implemented an independent validation using Lewis signaling games \cite{lewis1969convention,skyrms2010signals}.
+The substrate competition mechanism (Section 3) demonstrates \textit{how} codes can emerge through a specific physical process. But a skeptic might ask: is code emergence specific to this chemistry, or is it a generic outcome of coordination pressure? To address this, we implemented an independent validation using Lewis signaling games \cite{lewis1969convention,skyrms2010signals}---an abstract game-theoretic framework where agents evolve shared conventions through selection for coordination success.
 
 \subsection{The Lewis Game Framework}
 
@@ -373,13 +378,15 @@ An important finding: sender and receiver do not converge to \textit{identical} 
 
 \subsection{Implication}
 
-Code emergence is \textbf{mechanism-independent}. Any system with:
+The convergence of two very different frameworks---physical substrate competition and abstract evolutionary game theory---suggests that code emergence is \textbf{robust across mechanisms}. Both require:
 \begin{itemize}
     \item High-dimensional internal dynamics
-    \item Coordination pressure between units
-    \item Some form of winner-take-most or discretization
+    \item Pressure toward coordination or mutual prediction
+    \item Some form of discretization (winner-take-most or selection)
 \end{itemize}
-will spontaneously develop symbolic codes. This is not a property of substrate competition specifically; it is a generic consequence of coordination under observability constraints.
+We do not claim these mechanisms are physically equivalent. Substrate competition is a candidate prebiotic process; Lewis games are an abstract demonstration that coordination pressure generically produces conventions. The convergence strengthens the claim that code-like structure is a natural attractor of coordination dynamics, not a quirk of any specific implementation.
+
+\textbf{Scaling validation}: We tested Lewis games at genetic-code scale (64 states). Coordination accuracy decreases with scale (5.5\% at 64 states vs.\ 1.6\% random baseline), but code coverage remains high: evolved systems use 39/64 possible codes (61\%), compared to the genetic code's 21/64 (33\%). The scaling behavior is consistent with our claim that codes emerge but become harder to maintain at larger scales---the coordination ceiling reappears.
 
 %%% EXPANDED: NEW SECTION %%%
 %==============================================================================
@@ -454,6 +461,8 @@ The closest 32 codon pairs (p-adic distance $1/32$):
 \end{itemize}
 
 This validates Khrennikov's formalism: the 2-adic metric is not arbitrary---it captures the biologically meaningful structure of the genetic code. Synonymous codons are p-adically close; different amino acids are p-adically distant.
+
+\textbf{Baseline comparison:} To verify that the 2-adic encoding is not cherry-picked, we compared it to Hamming distance (1-nucleotide differences). For 1-Hamming pairs: 76/192 (40\%) code for the same amino acid. For p-adic closest pairs ($d = 1/32$): 30/32 (94\%) code for the same amino acid. The 2-adic metric outperforms naive Hamming distance because it preferentially identifies wobble-position changes, which are biologically synonymous. Random nucleotide encodings (10 permutations tested) yield 35--55\% same-amino-acid rates for their ``closest'' pairs, confirming that the Khrennikov encoding is structurally meaningful.
 
 \subsection{What Our Model Does Not Explain}
 
@@ -572,20 +581,20 @@ Figure~\ref{fig:ecology} shows the emergent ecology. Panel A displays the strate
 
 \subsection{Critical Finding: Derived Coordination Ceiling}
 
-Soft cost penalties are insufficient for size differentiation. We tested whether continuous cost functions (Eq.~2) alone could generate ecological structure. They cannot. The cost exponent $\gamma$ creates pressure toward smaller sizes at high coherence, but without a ceiling, coherent groups simply become arbitrarily small rather than forming a distinct attractor.
+Soft cost penalties are insufficient for size differentiation. We tested whether continuous cost functions (Eq.~5) alone could generate ecological structure. They cannot. The cost exponent $\gamma$ creates pressure toward smaller sizes at high coherence, but without a ceiling, coherent groups simply become arbitrarily small rather than forming a distinct attractor.
 
-Rather than impose an ad hoc ceiling, we \textbf{derive} it from signal propagation constraints. Coherent oscillation requires every element to influence every other on timescales faster than the oscillation period $T_{\text{osc}}$. Signal propagation time scales with group diameter:
+Rather than impose an ad hoc ceiling, we \textbf{derive} it from signal propagation constraints. Coherent oscillation requires every element to influence every other on timescales faster than the oscillation period $T_{\text{osc}}$. For diffusive signaling, propagation time scales with the \textit{square} of group diameter:
 \begin{equation}
-\tau_{\text{prop}}(N) = \frac{\text{diam}(G_N)}{v} \approx \frac{\sqrt{N/\rho}}{v}
+\tau_{\text{prop}}(N) = \frac{L^2}{D} \approx \frac{N}{\rho \, D}
 \end{equation}
-where $v$ is signal velocity and $\rho$ is packing density. Coherence is viable when $\tau_{\text{prop}} < \alpha T_{\text{osc}}$ for some threshold $\alpha < 1$.
+where $D$ is the diffusion coefficient, $\rho$ is packing density, and $L = \sqrt{N/\rho}$ is the characteristic diameter. Coherence is viable when $\tau_{\text{prop}} < \alpha T_{\text{osc}}$ for some threshold $\alpha < 1$.
 
 This yields a \textbf{derived ceiling}:
 \begin{equation}
-N^* = \rho \cdot (\alpha \, v \, T_{\text{osc}})^2
+N^* = \alpha \, \rho \, D \, T_{\text{osc}}
 \end{equation}
 
-For plausible prebiotic parameters ($v \sim 10$ $\mu$m/s diffusive signaling, $T_{\text{osc}} \sim 100$ s chemical oscillation, $\rho \sim 0.1$ cells/$\mu$m$^2$, $\alpha = 0.5$), this yields $N^* \approx 25$--$60$, consistent with our simulation range.
+For plausible prebiotic parameters ($D \sim 10$ $\mu$m$^2$/s for small signaling molecules, $T_{\text{osc}} \sim 100$ s chemical oscillation, $\rho \sim 0.1$ cells/$\mu$m$^2$, $\alpha = 0.5$), this yields $N^* \approx 50$, consistent with our simulation range.
 
 Predators sit exactly at the ceiling ($N \approx 39$ when ceiling $= 40$). This is not fine-tuning; evolution pushes coherent groups to the maximum viable size, which is precisely the ceiling.
 
@@ -651,9 +660,9 @@ We have validated the code emergence claim through two independent approaches:
 
 \textbf{Substrate competition} (Section 3--4): The primary mechanism, where Hill kinetics ($h > 1$) create winner-take-most dynamics that discretize continuous chemical gradients.
 
-\textbf{Lewis signaling games} (Section 5): An independent validation where sender-receiver pairs evolve shared codes through coordination pressure alone, without any substrate competition physics.
+\textbf{Lewis signaling games} (Section 5): An abstract game-theoretic validation where sender-receiver pairs evolve shared codes through coordination pressure alone, without any substrate competition physics.
 
-Both mechanisms produce the same outcome: discrete, non-colliding code mappings with high consistency. This demonstrates that code emergence is \textbf{mechanism-independent}---a generic consequence of coordination pressure under observability constraints, not a quirk of any particular physical implementation.
+Both frameworks produce the same outcome: discrete, non-colliding code mappings with high consistency. This demonstrates that code emergence is \textbf{robust across mechanisms}---a generic consequence of coordination pressure under observability constraints, not a quirk of any particular physical implementation.
 
 \subsection{Ecology Precedes Biology}
 
@@ -703,7 +712,7 @@ Several limitations constrain interpretation of these results:
 \section{Conclusion}
 %==============================================================================
 
-We have shown that symbolic codes emerge generically from coordination pressure in coupled compartment networks. Two independent mechanisms---substrate competition and Lewis signaling games---produce equivalent results, demonstrating that code emergence is mechanism-independent.
+We have shown that symbolic codes emerge generically from coordination pressure in coupled compartment networks. Two independent approaches---physical substrate competition and abstract Lewis signaling games---produce equivalent results, demonstrating that code emergence is robust across mechanisms.
 
 The codes that emerge have structure matching the genetic code: degeneracy correlates with robustness ($r = 0.80 \pm 0.08$, $n = 20$), and p-adic distance predicts synonymy. However, our model explains the \textit{function} of degeneracy (noise absorption) but not its \textit{form} (concentration at position 3). A complete theory requires both dynamics and chemistry.
 

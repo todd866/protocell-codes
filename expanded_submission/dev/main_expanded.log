@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  7 JAN 2026 07:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  7 JAN 2026 06:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -456,10 +456,7 @@ Underfull \hbox (badness 2626) in paragraph at lines 147--147
 cor-rectly clas-si-fied; Sep-a-ra-tion ra-tio $=
  []
 
-
-
-[5]
-<figures/fig1_architecture.pdf, id=301, 422.343pt x 363.52313pt>
+<figures/fig1_architecture.pdf, id=291, 422.343pt x 363.52313pt>
 File: figures/fig1_architecture.pdf Graphic file (type pdf)
 <use figures/fig1_architecture.pdf>
 Package pdftex.def Info: figures/fig1_architecture.pdf  used on input line 168.
@@ -467,8 +464,10 @@ Package pdftex.def Info: figures/fig1_architecture.pdf  used on input line 168.
 (pdftex.def)             Requested size: 469.75502pt x 404.35857pt.
 
 
+[5]
+
 [6]
-Overfull \hbox (6.63725pt too wide) in paragraph at lines 237--238
+Overfull \hbox (6.63725pt too wide) in paragraph at lines 232--233
 \OT1/cmr/m/n/12 To move be-yond ``we ob-served 32 dis-tin-guish-able codes,'' w
 e quan-tify de-cod-abil-ity information-
  []
@@ -476,10 +475,10 @@ e quan-tify de-cod-abil-ity information-
 
 
 [7]
-<figures/fig3_scale.pdf, id=318, 486.33257pt x 339.66586pt>
+<figures/fig3_scale.pdf, id=317, 486.33257pt x 339.66586pt>
 File: figures/fig3_scale.pdf Graphic file (type pdf)
 <use figures/fig3_scale.pdf>
-Package pdftex.def Info: figures/fig3_scale.pdf  used on input line 299.
+Package pdftex.def Info: figures/fig3_scale.pdf  used on input line 294.
 (pdftex.def)             Requested size: 469.75502pt x 328.09683pt.
 
 
@@ -497,7 +496,7 @@ Package pdftex.def Info: figures/fig3_scale.pdf  used on input line 299.
 <figures/fig2_ecology.pdf, id=366, 452.80888pt x 366.48607pt>
 File: figures/fig2_ecology.pdf Graphic file (type pdf)
 <use figures/fig2_ecology.pdf>
-Package pdftex.def Info: figures/fig2_ecology.pdf  used on input line 577.
+Package pdftex.def Info: figures/fig2_ecology.pdf  used on input line 568.
 (pdftex.def)             Requested size: 469.75502pt x 380.21939pt.
 
 
@@ -506,37 +505,37 @@ Package pdftex.def Info: figures/fig2_ecology.pdf  used on input line 577.
 [15]
 
 [16]
-
-[17]
-Underfull \hbox (badness 10000) in paragraph at lines 693--693
+Underfull \hbox (badness 10000) in paragraph at lines 684--684
 
  []
 
 
-Overfull \hbox (30.02821pt too wide) in paragraph at lines 701--702
+Overfull \hbox (30.02821pt too wide) in paragraph at lines 692--693
 \OT1/cmr/m/n/12 proof-of-concept, not ex-per-i-men-tal demon-stra-tion. The fra
 me-work gen-er-ates testable predictions---
  []
 
 
-Overfull \hbox (16.09816pt too wide) in paragraph at lines 703--704
+Overfull \hbox (16.09816pt too wide) in paragraph at lines 694--695
 []\OT1/cmr/bx/n/12 Phenomenological dy-nam-ics. \OT1/cmr/m/n/12 The reser-voir 
 model is a generic proxy for high-dimensional
  []
 
 
 
+[17]
+
 [18]
 
 [19]
-
-[20]
-Underfull \hbox (badness 1005) in paragraph at lines 820--823
+Underfull \hbox (badness 1005) in paragraph at lines 811--814
 \OT1/cmr/m/n/12 Preprint, 2026. Avail-able: []$\OT1/cmtt/m/n/12 https : / / git
 hub . com / todd866 / tracking-[]complexity /
  []
 
 
+
+[20]
 
 [21]
 
@@ -544,13 +543,11 @@ hub . com / todd866 / tracking-[]complexity /
 
 [23]
 
-[24]
+[24 <./figures/fig1_architecture.pdf>]
 
-[25 <./figures/fig1_architecture.pdf>]
+[25 <./figures/fig3_scale.pdf>]
 
-[26 <./figures/fig3_scale.pdf>]
-
-[27 <./figures/fig2_ecology.pdf>] (./main_expanded.aux)
+[26 <./figures/fig2_ecology.pdf>] (./main_expanded.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -559,38 +556,36 @@ Package rerunfilecheck Info: File `main_expanded.out' has not changed.
 (rerunfilecheck)             Checksum: 142AF5F77EBEA672F8AD8280CD2E581C;10506.
  ) 
 Here is how much of TeX's memory you used:
- 11357 strings out of 474662
- 173925 string characters out of 5751108
- 588684 words of memory out of 5000000
- 34100 multiletter control sequences out of 15000+600000
- 574819 words of font info for 96 fonts, out of 8000000 for 9000
+ 11346 strings out of 474662
+ 173819 string characters out of 5751108
+ 589634 words of memory out of 5000000
+ 34094 multiletter control sequences out of 15000+600000
+ 573247 words of font info for 90 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 75i,14n,79p,1457b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,14n,79p,1438b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </Users/iantodd/Library/texlive/2025basic/texmf-var/fonts/pk/ljfour/jknappen
 /ec/tcrm1200.600pk></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/pub
 lic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025basic/texmf-dist/font
-s/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025basic/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2025basic/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025basic/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2025basic
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025ba
-sic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/202
-5basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2
-025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texli
-ve/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/te
-xlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local
-/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/l
-ocal/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></u
-sr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam1
-0.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symb
-ols/msbm10.pfb>
-Output written on main_expanded.pdf (27 pages, 389563 bytes).
+/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2025basic/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2025basic/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2025basic/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2025basic/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2025basic
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2025ba
+sic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2025
+basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/
+2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texli
+ve/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/t
+exlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></usr/loc
+al/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+</usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/ms
+bm10.pfb>
+Output written on main_expanded.pdf (26 pages, 366299 bytes).
 PDF statistics:
- 849 PDF objects out of 1000 (max. 8388607)
- 575 compressed objects within 6 object streams
- 157 named destinations out of 1000 (max. 500000)
+ 834 PDF objects out of 1000 (max. 8388607)
+ 565 compressed objects within 6 object streams
+ 156 named destinations out of 1000 (max. 500000)
  440 words of extra memory for PDF output out of 10000 (max. 10000000)
 
