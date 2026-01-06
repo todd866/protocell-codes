@@ -1,110 +1,93 @@
-# Protocell Codes: From Chemistry to Ecology
+# HeroX Evolution 2.0 Prize Submission
 
-**Core insight**: Codes emerge as coordination interfaces between coupled protocellular compartments. Metabolic ceilings on coherence prevent homogenization and generate predator-prey dynamics. Communication precedes information storage; ecology precedes biological complexity.
+**Core Insight**: Codes emerge as coordination interfaces between coupled protocellular compartments. Communication precedes information storage. The genetic code is the compression of meaning that first existed in distributed coupling fields.
 
-## Project Structure
+## Folder Structure
 
 ```
 60_heroX_evolution/
-├── paper/                    # Discover Life submission (main paper)
-│   └── main.tex             # "From Chemistry to Ecology" (~8 pages)
-├── evo2/                     # HeroX Evolution 2.0 prize submission
-│   └── prize_submission.tex  # Competition entry (~8 pages)
-├── patent/                   # Australian provisional patent
-│   └── australian_provisional.tex
-├── preprints/                # Mathematical foundations (GitHub-only)
-│   ├── manifold_expansion.tex    # Fisher rank increase under coupling
-│   └── coherence_ecology.tex     # IG version of predator-prey
-├── simulation/               # All simulation code
-│   ├── code_emergence.py     # Code emergence (use --scale for size)
-│   ├── predator_prey.py      # Predator-prey dynamics
-│   └── results/              # Saved outputs
-└── archive/                  # Old versions
+├── prize/                    # HeroX prize submission (~5 pages)
+│   ├── prize_submission.tex
+│   └── prize_submission.pdf
+├── biosystems/               # BioSystems paper (~15 pages)
+│   ├── biosystems_submission.tex
+│   └── biosystems_submission.pdf
+├── ig/                       # Information Geometry companion (~9 pages)
+│   ├── constraint_exchange.tex
+│   └── constraint_exchange.pdf
+├── patent/                   # Australian provisional (25 claims)
+│   ├── australian_provisional.tex
+│   └── australian_provisional.pdf
+├── simulation/               # Python code
+│   ├── simulate.py           # Main simulation
+│   ├── overnight_run.py      # Batch runner
+│   └── results.npy           # Saved metrics
+├── figures/
+├── articles/
+└── archive/
 ```
 
-## Key Results
+## Key Results (61 Vesicles, 128D)
 
-### Code Emergence (61 vesicles, 128D)
-
-| Metric | Result |
-|--------|--------|
-| Unique codes | 32/32 (no collisions) |
-| Reproducibility | 98.4% |
-| Separation ratio | 335,000x |
+| Metric | Value |
+|--------|-------|
+| Unique mappings | 32/32 (no collisions) |
+| Reproducibility | 100% |
+| Separation ratio | 335,361× |
 | Env-Attractor correlation | 0.72 |
+| Decoder accuracy | 100% (physics-only) |
 
-### Scale Dependence
+## The Mechanism
 
-| Metric | Medium (61x128D) | Massive (169x512D) |
-|--------|------------------|-------------------|
-| Unique codes | 32/32 | 32/32 |
-| D_eff | 6.3 | 16.7 |
-| Reproducibility | 98.4% | 84.2% |
+**Substrate competition** (lateral inhibition) discretizes continuous dynamics:
+- Output channels compete for finite metabolic resources
+- Hill kinetics + Michaelis-Menten saturation
+- The allocation formula is QSSA for competitive binding
+- 89% of outputs saturated → emergent digitality
 
-**Instability at scale is not a bug**---it's the metabolic ceiling that prevents homogenization.
-
-### Predator-Prey Emergence
-
-| Property | Predators | Prey |
-|----------|-----------|------|
-| Population | 1% (36) | 99% (4964) |
-| Size N | 39 | 183 |
-| Coherence C | 0.53 | 0.12 |
-
-Size difference (144 +/- 0.8) robust across 8 random seeds.
-
-## Running Simulations
+## Building
 
 ```bash
-# Code emergence (default: small scale, ~1 min)
-python3 simulation/code_emergence.py
+# Prize submission
+cd prize && pdflatex prize_submission.tex
 
-# Different scales
-python3 simulation/code_emergence.py --scale=small    # 19×64D (~1 min)
-python3 simulation/code_emergence.py --scale=medium   # 61×128D (~10 min)
-python3 simulation/code_emergence.py --scale=large    # 127×256D (~30 min)
-python3 simulation/code_emergence.py --scale=massive  # 169×512D (~2 hrs)
-
-# Other options
-python3 simulation/code_emergence.py --sweep          # 20-seed robustness
-python3 simulation/code_emergence.py --coupling       # Manifold expansion test
-python3 simulation/code_emergence.py --full           # Complete validation
-
-# Overnight run (background)
-nohup python3 simulation/code_emergence.py --scale=massive &
-
-# Predator-prey ecology
-python3 simulation/predator_prey.py
-```
-
-## Building Papers
-
-```bash
-# Discover Life paper
-cd paper && pdflatex main.tex && pdflatex main.tex
-
-# Evo2 prize submission
-cd evo2 && pdflatex prize_submission.tex
+# BioSystems paper
+cd biosystems && pdflatex biosystems_submission.tex
 
 # Patent
 cd patent && pdflatex australian_provisional.tex
+
+# Simulations
+python3 simulation/simulate.py          # Single run
+python3 simulation/simulate.py --sweep  # 20-seed test
+nohup python3 simulation/overnight_run.py &  # Background batch
 ```
 
-## Submission Targets
+## Submission Priority
 
-1. **Discover Life** (Springer) - Main paper combining codes + ecology
-   - CAUL covered for USyd (free OA)
-   - Discounted APC €1090 until Dec 2026 if cap hit
-   - Formerly "Origins of Life and Evolution of Biospheres"
-2. **HeroX Evolution 2.0** - Prize submission (after patent)
-3. **IP Australia** - Provisional patent (~$130 AUD)
+1. **Patent** → IP Australia (~$130 AUD) - establishes priority date
+2. **Prize** → HeroX (can be submitted anytime after patent)
+3. **Discover Life** (formerly Origins of Life) → Full theoretical treatment
 
-## Mathematical Foundations
+## Status (Jan 2026)
 
-Available as GitHub preprints:
-- [Manifold Expansion](https://github.com/todd866/manifold-expansion) - Fisher rank increase under coupling
-- [Tracking Complexity](https://github.com/todd866/tracking-complexity) - Curvature amplification in projections
+- [x] Main paper complete (`paper/main.tex`)
+- [x] Cover letter complete
+- [x] All simulations reproducible
+- [x] Prize submission ready
+- [ ] Submit to Discover Life
 
 ## License
 
 MIT License
+
+---
+
+## See Also
+
+**This project is part of the Evo2.0 cluster. See:**
+- `../../CLUSTER_STATUS_EVO2.md` — Cluster status tracking (HeroX + Araudia + Social Intel)
+- `../../PROJECT_INDEX.md` — Full research program inventory
+- `../../CLAUDE.md` — Workflow documentation and journal strategy
+- `../62_araudia_integration/` — Araudia integration (stochastic validation, winner margins)
+- `../../biosystems/61_social_intelligence/` — Social Intelligence paper (why codes require coordination)

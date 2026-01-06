@@ -1,0 +1,86 @@
+[
+  {
+    "param": "pop_size",
+    "value": 20,
+    "coordination": 0.35,
+    "unique_codes": 5
+  },
+  {
+    "param": "pop_size",
+    "value": 50,
+    "coordination": 0.35,
+    "unique_codes": 5
+  },
+  {
+    "param": "pop_size",
+    "value": 100,
+    "coordination": 0.4,
+    "unique_codes": 6
+  },
+  {
+    "param": "pop_size",
+    "value": 200,
+    "coordination": 0.45,
+    "unique_codes": 4
+  },
+  {
+    "param": "mutation_rate",
+    "value": 0.005,
+    "coordination": 0.35,
+    "unique_codes": 4
+  },
+  {
+    "param": "mutation_rate",
+    "value": 0.01,
+    "coordination": 0.4,
+    "unique_codes": 5
+  },
+  {
+    "param": "mutation_rate",
+    "value": 0.02,
+    "coordination": 0.4,
+    "unique_codes": 6
+  },
+  {
+    "param": "mutation_rate",
+    "value": 0.05,
+    "coordination": 0.825,
+    "unique_codes": 7
+  },
+  {
+    "param": "mutation_rate",
+    "value": 0.1,
+    "coordination": 0.9,
+    "unique_codes": 7
+  },
+  {
+    "param": "n_signals",
+    "value": 8,
+    "coordination": 0.4,
+    "unique_codes": 6
+  },
+  {
+    "param": "n_signals",
+    "value": 12,
+    "coordination": 0.375,
+    "unique_codes": 5
+  },
+  {
+    "param": "n_signals",
+    "value": 16,
+    "coordination": 0.425,
+    "unique_codes": 5
+  },
+  {
+    "param": "n_signals",
+    "value": 24,
+    "coordination": 0.4,
+    "unique_codes": 7
+  },
+  {
+    "param": "n_signals",
+    "value": 32,
+    "coordination": 0.425,
+    "unique_codes": 7
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "correlation_r": 0.2586721425519561,
+  "correlation_p": 3.5200918210521406e-32,
+  "distance_analysis": [
+    {
+      "distance": 0.03125,
+      "distance_str": "1/32",
+      "error_rate": 0.0625,
+      "n_pairs": 32
+    },
+    {
+      "distance": 0.0625,
+      "distance_str": "1/16",
+      "error_rate": 0.46875,
+      "n_pairs": 64
+    },
+    {
+      "distance": 0.125,
+      "distance_str": "1/8",
+      "error_rate": 0.984375,
+      "n_pairs": 128
+    },
+    {
+      "distance": 0.25,
+      "distance_str": "1/4",
+      "error_rate": 1.0,
+      "n_pairs": 256
+    },
+    {
+      "distance": 0.5,
+      "distance_str": "1/2",
+      "error_rate": 0.984375,
+      "n_pairs": 512
+    },
+    {
+      "distance": 1.0,
+      "distance_str": "1/1",
+      "error_rate": 0.984375,
+      "n_pairs": 1024
+    }
+  ],
+  "closest_pairs": {
+    "total": 32,
+    "position_3_only": 32,
+    "same_amino_acid": 30
+  }
+}
