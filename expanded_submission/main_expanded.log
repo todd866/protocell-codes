@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  7 JAN 2026 07:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  7 JAN 2026 07:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -440,6 +440,19 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
+LaTeX Warning: Citation `takeuchi2019dogma' on page 2 undefined on input line 4
+8.
+
+
+LaTeX Warning: Citation `igamberdiev1999coherence' on page 2 undefined on input
+ line 65.
+
+
+LaTeX Warning: Citation `igamberdiev2024bauer' on page 2 undefined on input lin
+e 65.
+
+
+
 [2]
 Overfull \hbox (5.62338pt too wide) in paragraph at lines 89--90
 []\OT1/cmr/m/n/12 Each pro-to-cell has high-dimensional in-ter-nal dy-nam-ics (
@@ -488,6 +501,15 @@ Package pdftex.def Info: figures/fig3_scale.pdf  used on input line 299.
 [9]
 
 [10]
+
+LaTeX Warning: Citation `dragovich2019hierarchical' on page 11 undefined on inp
+ut line 437.
+
+
+LaTeX Warning: Citation `dragovich2021padic' on page 11 undefined on input line
+ 437.
+
+
 
 [11]
 
@@ -546,23 +568,32 @@ hub . com / todd866 / tracking-[]complexity /
 
 [24]
 
-[25 <./figures/fig1_architecture.pdf>]
+[25]
 
-[26 <./figures/fig3_scale.pdf>]
+[26 <./figures/fig1_architecture.pdf>]
 
-[27 <./figures/fig2_ecology.pdf>] (./main_expanded.aux)
+[27 <./figures/fig3_scale.pdf>]
+
+[28 <./figures/fig2_ecology.pdf>] (./main_expanded.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `main_expanded.out' has not changed.
 (rerunfilecheck)             Checksum: 142AF5F77EBEA672F8AD8280CD2E581C;10506.
  ) 
 Here is how much of TeX's memory you used:
- 11357 strings out of 474662
- 173925 string characters out of 5751108
+ 11369 strings out of 474662
+ 174183 string characters out of 5751108
  588684 words of memory out of 5000000
- 34100 multiletter control sequences out of 15000+600000
+ 34106 multiletter control sequences out of 15000+600000
  574819 words of font info for 96 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  75i,14n,79p,1457b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -587,10 +618,10 @@ ocal/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></u
 sr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam1
 0.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symb
 ols/msbm10.pfb>
-Output written on main_expanded.pdf (27 pages, 389563 bytes).
+Output written on main_expanded.pdf (28 pages, 390868 bytes).
 PDF statistics:
- 849 PDF objects out of 1000 (max. 8388607)
- 575 compressed objects within 6 object streams
- 157 named destinations out of 1000 (max. 500000)
+ 859 PDF objects out of 1000 (max. 8388607)
+ 584 compressed objects within 6 object streams
+ 163 named destinations out of 1000 (max. 500000)
  440 words of extra memory for PDF output out of 10000 (max. 10000000)
 
