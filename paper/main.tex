@@ -44,11 +44,12 @@ We propose a different framing: \textbf{codes originated not for intracellular r
 \begin{quote}
 \textit{chemistry $\to$ molecules $\to$ replication $\to$ cells $\to$ ecology $\to$ cooperation}
 \end{quote}
-We invert this sequence: \textit{social dynamics preceded molecular codes}:
+Recent work on autocatalytic chemical ecosystems \cite{baum2023ecology,peng2022hierarchical} has established the conceptual possibility of ecological dynamics prior to bounded cells. We go further, proposing both an inversion of the standard sequence and the mechanisms that drive it:
 \begin{quote}
 \textit{compartments $\to$ coordination pressure $\to$ ecological differentiation $\to$ codes $\to$ genetic internalization}
-\end{quote}
-The ecological dynamics we observe in mature biology---predator-prey relationships, competition, metabolic coordination costs---are not late additions to an already-coded system. They are the \textit{drivers} of code emergence. Coordination pressure between compartments created selection for discrete signaling interfaces; the genetic code is a late internalization of protocols that first existed in the coupling fields between cells.
+\end{quote} The ecological dynamics we observe in mature biology---predator-prey relationships, competition, metabolic coordination costs---are not late additions to an already-coded system. They are the \textit{drivers} of code emergence. Coordination pressure between compartments created selection for discrete signaling interfaces; the genetic code is a late internalization of protocols that first existed in the coupling fields between cells.
+
+Our contribution is a specific mechanism: \textbf{substrate competition} via cooperative binding (Hill kinetics, $h > 1$) produces discrete output attractors from continuous input gradients. We also derive the coordination ceiling from signal propagation physics, explaining why coherent groups cannot grow indefinitely.
 
 Specifically, we propose that \textbf{codes first emerged as coordination interfaces between coupled protocellular compartments}. They were not transmitted messages but stable patterns that allowed neighbors to influence each other's behavior without full state knowledge. This view aligns with models showing that genetic code structure can emerge via horizontal exchange between protocells rather than vertical descent \cite{markovitch2018horizontal}. The encoder-message-decoder structure we recognize in mature biological systems is a \textit{late refinement}---the internalization and compression of coordination protocols that first existed in the distributed coupling fields between cells.
 
@@ -114,6 +115,8 @@ We implement a minimal coupled-compartment system based on prebiotic amphiphile 
     \item Weak neighbor coupling via boundary signals
 \end{itemize}
 
+\textbf{Biological interpretation.} This architecture maps onto a prebiotic ecosystem containing all three major components: vesicles provide compartmentalization, the 128 internal dimensions represent peptide catalyst concentrations and conformational states, and the readout channels represent peptide-nucleotide binding sites competing for shared nucleotide substrate pools. The Hill kinetics of substrate competition (Eq.~\ref{eq:substrate}) directly models cooperative peptide-substrate binding. In this interpretation, the ``codes'' that emerge are proto-metabolic phenotypes---stable patterns of peptide activity that differentiate vesicle populations before any template-directed replication exists.
+
 \subsection{The Discretization Mechanism}
 
 The critical innovation is \textbf{substrate competition}---a lateral inhibition mechanism where output channels compete for shared metabolic resources. Consider $M$ output channels drawing from a common substrate pool of concentration $S$. Each channel $j$ has raw activation $a_j$ determined by the vesicle's internal state. The competitive output is:
@@ -129,10 +132,12 @@ The mechanism is prebiotically plausible. Substrate competition occurs naturally
 
 \textbf{Key property}: The discretization is \textit{emergent}, not imposed. No external logic specifies which channel should win. The physics of competition creates digital outputs from analog inputs---precisely the transition required for symbolic codes to arise from continuous chemistry.
 
+\textbf{Mechanism interaction}: Substrate competition alone is noise-sensitive---it amplifies whatever signal it receives, including noise. Reliable discretization requires the upstream reservoir dynamics to create \textit{winner margins}: clear separation between the strongest and second-strongest activations. Even modest margins ($\sim$2$\times$) yield robust outputs when amplified by $h = 4$. The reservoir dynamics create these margins through attractor formation; the competition mechanism then sharpens them into discrete codes. Neither component alone suffices.
+
 \medskip
 \noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
 \textbf{Code Definition (Operational)}\\[0.5em]
-\textit{Code signal}: The 60-dimensional vector $\mathbf{c} = [\boldsymbol{\phi}_{\text{center}}; \boldsymbol{\phi}_{\text{edge}}]$ comprising competitive outputs (Eq.~\ref{eq:substrate}) from center and edge vesicles, accumulated over 4 temporal cycles.\\[0.3em]
+\textit{Code signal}: Each temporal cycle produces a 60-dimensional vector $\mathbf{c}_t = [\boldsymbol{\phi}_{\text{center}}; \boldsymbol{\phi}_{\text{edge}}]$ (30 center + 30 edge readout channels). The full 4-cycle codeword is the 240-dimensional concatenation $\mathbf{C} = [\mathbf{c}_1; \mathbf{c}_2; \mathbf{c}_3; \mathbf{c}_4]$, capturing both spatial pattern and temporal sequence.\\[0.3em]
 \textit{Decoder rule}: Nearest-centroid classification. Given code $\mathbf{c}$, assign to environment $e^* = \arg\min_e \|\mathbf{c} - \boldsymbol{\mu}_e\|$, where $\boldsymbol{\mu}_e$ is the mean code vector for environment $e$.\\[0.3em]
 \textit{Metrics}: Decoding accuracy $=$ fraction correctly classified; Separation ratio $= \bar{d}_{\text{between}} / \bar{d}_{\text{within}}$ in code space.\\[0.3em]
 \textit{Note}: The code is a continuous chemical signal (concentration profile), not a discrete symbol sequence. Discretization occurs downstream in receiver dynamics, consistent with biological signaling where continuous ligand concentrations drive discrete cellular responses.}}
@@ -508,6 +513,44 @@ Our framework differs fundamentally from previous approaches to explaining genet
 
 The key distinction is that previous theories assume codes require molecular machinery (ribosomes, tRNAs, aminoacyl-tRNA synthetases). We propose that codes first existed as \textit{distributed coordination patterns} in coupled compartment networks. The molecular machinery is a later internalization of protocols that originally lived in the coupling fields between cells.
 
+\subsection{Why Codes Are Necessary: The Observability Constraint}
+
+The substrate competition mechanism answers \textit{how} codes emerge. But a deeper question remains: \textit{why} must codes emerge at all? Why can't high-dimensional chemical systems coordinate directly?
+
+The answer lies in observability constraints. Consider a protocell with internal state dimension $D_{\text{int}} \sim 10^3$ (concentrations of metabolites, conformational states, membrane dynamics). For a neighboring protocell to \textit{respond} to this internal state, it must somehow \textit{observe} it. But observation has finite bandwidth.
+
+Recent work on high-dimensional dynamics \cite{todd2026intelligence} establishes an Observable Dimensionality Bound: external observers cannot track systems whose effective dimensionality exceeds $D_{\text{crit}} = C\tau/h$, where $C$ is channel capacity, $\tau$ is the relevant timescale, and $h$ is the bits required per degree of freedom. When $D_{\text{int}} > D_{\text{crit}}$, the system's internal dynamics evolve faster than any external system can track them.
+
+This creates a fundamental coordination problem. High-dimensional chemical systems are \textit{mutually unobservable}---each protocell's internal dynamics are opaque to its neighbors. Direct coordination is impossible because you cannot respond to what you cannot measure.
+
+\textbf{Codes are the necessary solution.} Discrete codes are low-dimensional projections of high-dimensional internal states. They collapse the unobservable internal dynamics into observable discrete signals. Substrate competition is the prebiotically plausible mechanism that \textit{performs} this dimensional collapse---projecting continuous high-D chemistry onto discrete low-D outputs.
+
+This reframes the code emergence problem: codes are not arbitrary conveniences but \textit{thermodynamic necessities} for inter-system coordination. Any system of coupled high-dimensional chemical networks will develop discrete codes because coordination requires mutual observability, and observability requires dimensional reduction.
+
+\subsection{The Prebiotic Ecosystem: RNA, Peptides, and Vesicles Together}
+
+The origin of life field has fragmented into competing ``world'' hypotheses: RNA World (information first), Peptide World (catalysis first), Lipid World (compartments first). We propose this framing is fundamentally mistaken.
+
+All three components---nucleotides, peptides, and lipid vesicles---were likely present simultaneously in prebiotic environments. They did not compete for priority; they formed an \textit{ecosystem}. Each component provides different functional contributions:
+
+\begin{itemize}
+    \item \textbf{Vesicles} provide compartmentalization, creating the ``units'' that can differentiate and compete
+    \item \textbf{Peptides} provide catalysis, modulating reaction rates and enabling metabolic differentiation
+    \item \textbf{Nucleotides/RNA} provide template-directed replication, enabling heredity once codes stabilize
+\end{itemize}
+
+\textbf{Dimensionality drives code emergence.} The key insight is that having all three components interacting simultaneously \textit{increases} the effective dimensionality of the system. Each additional type of interaction---peptide-nucleotide, lipid-peptide, nucleotide-membrane---adds degrees of freedom. A vesicle containing only lipids might have $D_{\text{eff}} \sim 10^2$; add peptide catalysts and you gain conformational states, binding kinetics, allosteric regulation ($D_{\text{eff}} \sim 10^3$); add nucleotide metabolism and you gain template dynamics, base-pairing energetics, polymerization kinetics ($D_{\text{eff}} \sim 10^4$).
+
+This heterogeneous ecosystem is not incidentally present before codes---it is what \textit{drives} the need for codes. The more diverse the interactions, the higher the effective dimensionality, the more likely the system exceeds $D_{\text{crit}}$, and the more essential discrete codes become for inter-system coordination. Codes are not a late luxury; they are a thermodynamic necessity once chemical complexity crosses the observability threshold.
+
+In our framework, codes emerge from coordination pressure \textit{between} these components. Vesicles loaded with different peptide catalysts compete for shared nucleotide pools. Substrate competition at the peptide level discretizes continuous chemical gradients into distinct metabolic phenotypes. RNA templates later \textit{internalize} these codes, but the codes themselves preexist the templates.
+
+We have validated this coordination-first mechanism computationally using Lewis signaling games: sender cells observe states and emit signals; receiver cells observe signals and produce actions; both are rewarded when action matches state. Without any external target mapping, sender-receiver pairs converge on shared vocabularies---the same code structures that emerge from our substrate competition mechanism. This demonstrates that coordination pressure alone, without supervision, suffices to generate discrete codes.
+
+This ecosystem view resolves the circularity problem: codes don't require the molecular machinery that implements them because codes first existed as coordination patterns in the coupling fields between heterogeneous chemical systems. The ribosome is a late innovation that internalizes and stabilizes codes that originally lived in the distributed state.
+
+Recent work on protocell ecologies provides complementary perspective: Shirt-Ediss et al.\ \cite{shirtediss2025} show that regulatory capacities resembling lac-operon switching can emerge in cross-feeding protocell populations, demonstrating that ``agency-like'' adaptive behavior arises before genetic encoding. Our framework adds the \textit{code emergence} mechanism to this picture: substrate competition explains how the discrete signals that regulation acts upon first arise from continuous chemistry.
+
 \subsection{Abiogenesis: The ``Between'' Becoming ``Within''}
 
 We propose that abiogenesis follows a trajectory: (1) coherence dynamics connect compartments via coupling fields---the ``code'' lives \textit{between} cells; (2) environmental pressure forces internalization; (3) compartments create stable internal references (eventually RNA/DNA). The genetic code is not the origin of meaning; it is the \textit{fossilization} of meaning that lived in the distributed state.
@@ -532,7 +575,7 @@ Once codes exist, predation acquires a new dimension: code spoofing, mimicry, au
 
 \subsection{Experimental Accessibility}
 
-Modern microfluidic techniques allow fabrication of vesicle arrays with controlled topology, loading with oscillatory chemistry, and measurement of inter-vesicle coupling. The predictions---that coupled vesicle networks spontaneously develop reproducible discrete codes---are directly testable.
+Modern microfluidic techniques allow fabrication of vesicle arrays with controlled topology, loading with oscillatory chemistry, and measurement of inter-vesicle coupling. Benchtop platforms can already mimic prebiotic energy sources---lightning-driven plasma electrochemistry generates sustained reactive C/N species under controlled conditions \cite{jiang2024lightning}---providing the environmental gradients that drive differentiation in our model. The predictions---that coupled vesicle networks spontaneously develop reproducible discrete codes---are directly testable.
 
 \subsection{Supporting Evidence from Non-Living Systems}
 
@@ -571,7 +614,7 @@ Several limitations constrain interpretation of these results:
 
 \textbf{Phenomenological dynamics.} The reservoir model is a generic proxy for high-dimensional reaction networks, not literal chemistry. The discretization mechanism (substrate competition) is the prebiotic ingredient; the reservoir dynamics are a placeholder for ``complex nonlinear system near criticality.'' Future work should implement explicit chemical kinetics.
 
-\textbf{Continuous code signal.} The 60-dimensional code vector is a continuous signal, not a discrete symbol sequence. While substrate competition produces winner-take-most dynamics within each channel, the full code retains continuous variation. Discretization to symbolic form (if desired) would require additional downstream processing, consistent with how biological receivers threshold continuous ligand signals into discrete responses.
+\textbf{Continuous code signal.} The 240-dimensional codeword (60D per cycle $\times$ 4 cycles) is a continuous signal, not a discrete symbol sequence. While substrate competition produces winner-take-most dynamics within each channel, the full code retains continuous variation. Discretization to symbolic form (if desired) would require additional downstream processing, consistent with how biological receivers threshold continuous ligand signals into discrete responses.
 
 \textbf{Ecology model uses soft ceiling.} The coordination ceiling is implemented as a smooth, coherence-dependent constraint rather than a hard cutoff. High-coherence colonies face increasingly steep size penalties as they exceed a characteristic scale, modeling the physics of propagation-time constraints (coherent oscillation requires synchronization across the colony; propagation time $\propto \sqrt{N}$). While robustness tests show qualitative results persist across parameter ranges, a first-principles derivation from specific metabolic coupling would strengthen the argument.
 
@@ -593,10 +636,6 @@ In this framework, communication precedes information storage, and ecology prece
 \noindent\textbf{Code availability}: \url{https://github.com/todd866/protocell-codes}
 
 \noindent\textbf{Companion papers}: Extended mathematical foundations in \cite{todd2026manifold,todd2026tracking}.
-
-\section*{Acknowledgments}
-
-I thank Cyril Grueter (University of Western Australia; now University of Oxford) for undergraduate teaching in biological anthropology that first made me see social coordination as a problem physics could address.
 
 \section*{Declarations}
 
@@ -641,6 +680,21 @@ I.~A. Chen and P.~Walde.
 From self-assembled vesicles to protocells.
 \textit{Cold Spring Harbor Perspectives in Biology}, 2:a002170, 2010.
 
+\bibitem{baum2023ecology}
+D.~A. Baum, Z.~Peng, E.~Dolson, E.~Smith, A.~M. Plum, and P.~Gagrani.
+The ecology--evolution continuum and the origin of life.
+\textit{Journal of the Royal Society Interface}, 20:20230346, 2023.
+
+\bibitem{shirtediss2025}
+B.~Shirt-Ediss, A.~Ferrero-Fern\'{a}ndez, D.~De~Martino, L.~Bich, A.~Moreno, and K.~Ruiz-Mirazo.
+Modelling the prebiotic origins of regulation and agency in evolving protocell ecologies.
+\textit{Philosophical Transactions of the Royal Society B}, 380:20240287, 2025.
+
+\bibitem{peng2022hierarchical}
+Z.~Peng, A.~M. Plum, P.~Gagrani, and D.~A. Baum.
+An ecological framework for the analysis of prebiotic chemical reaction networks.
+\textit{Journal of Theoretical Biology}, 507:110451, 2021.
+
 \bibitem{black2013nucleobases}
 R.~A. Black, M.~C. Blosser, B.~L. Stottrup, R.~Tavakley, D.~W. Deamer, and S.~L. Keller.
 Nucleobases bind to and stabilize aggregates of a prebiotic amphiphile, providing a viable mechanism for the emergence of protocells.
@@ -670,6 +724,11 @@ Toward understanding protocell mechanosensation.
 I.~Todd.
 Communication beyond information: Manifold expansion via high-dimensional coupling.
 Preprint: \url{https://github.com/todd866/manifold-expansion}, 2026.
+
+\bibitem{todd2026intelligence}
+I.~Todd.
+Intelligence as high-dimensional coherence: The observable dimensionality bound and computational tractability.
+Under review, \textit{BioSystems}, 2026.
 
 \bibitem{todd2026tracking}
 I.~Todd.
@@ -745,6 +804,11 @@ Evolution of multilevel social systems in nonhuman primates and humans.
 Z.~Huang, X.~Qi, C.~C. Grueter, P.~A. Garber, S.~Guo, and B.~Li.
 Multilevel societies facilitate infanticide avoidance through increased extrapair matings.
 \textit{Animal Behaviour}, 161:127--137, 2020.
+
+\bibitem{jiang2024lightning}
+J.~Jiang, Z.~Liu, H.~Chen, and M.~Crossley.
+Mimicking lightning-induced electrochemistry on the early {Earth}.
+\textit{Proceedings of the National Academy of Sciences}, 121(32):e2400819121, 2024.
 
 \end{thebibliography}
 
