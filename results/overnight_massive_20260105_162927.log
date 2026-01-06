@@ -1,0 +1,34 @@
+[16:29:28] ======================================================================
+[16:29:28] OVERNIGHT SIMULATION - MASSIVE
+[16:29:28] ======================================================================
+[16:29:28] Vesicles: 169 (7 rings)
+[16:29:28] Internal dims: 512
+[16:29:28] Readout channels: 100
+[16:29:28] Center: 20, Edge: 149
+[16:29:28] Trials per config: 30
+[16:29:28] 
+[17:02:28] Progress: 100/960 (10.4%) - ETA: 283.9 min
+[17:33:05] Progress: 200/960 (20.8%) - ETA: 241.8 min
+[18:03:54] Progress: 300/960 (31.2%) - ETA: 207.8 min
+[18:36:32] Progress: 400/960 (41.7%) - ETA: 177.9 min
+[19:10:39] Progress: 500/960 (52.1%) - ETA: 148.3 min
+[19:46:07] Progress: 600/960 (62.5%) - ETA: 118.0 min
+[20:40:24] Progress: 700/960 (72.9%) - ETA: 93.2 min
+[21:24:08] Progress: 800/960 (83.3%) - ETA: 58.9 min
+[22:09:15] Progress: 900/960 (93.8%) - ETA: 22.7 min
+[22:27:14] 
+[22:27:14] Computation complete in 357.8 minutes
+[22:27:14] 
+[22:27:14] ======================================================================
+[22:27:14] RESULTS
+[22:27:14] ======================================================================
+[22:27:14] Reproducibility: 84.2% avg, 36.7% min
+[22:27:14] Unique mappings: 32/32 (collisions: 0)
+[22:27:18] Separation ratio: 4.4x
+[22:27:20] Env-Attractor correlation: 0.826
+[22:27:20] Effective dimensionality (D_eff): 16.66
+[22:27:20] 
+[22:27:20] Results saved to overnight_massive_20260105_162928.npy
+[22:27:20] Log saved to overnight_massive_20260105_162928.log
+[22:27:20] 
+[22:27:20] DONE!
