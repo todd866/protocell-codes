@@ -678,9 +678,46 @@ This is not merely theoretical. Predator-prey dynamics have been observed in non
 
 Once codes exist, predation acquires a new dimension: code spoofing, mimicry, authentication arms races. Prey evolve defenses; predators evolve exploits. Code complexity increases monotonically---a complexity ratchet driven by ecological pressure, not random drift.
 
-\subsection{Experimental Accessibility}
+\subsection{Experimental Protocol Sketch}
 
-Modern microfluidic techniques allow fabrication of vesicle arrays with controlled topology, loading with oscillatory chemistry, and measurement of inter-vesicle coupling. Benchtop platforms can already mimic prebiotic energy sources---lightning-driven plasma electrochemistry generates sustained reactive C/N species under controlled conditions \cite{jiang2024lightning}---providing the environmental gradients that drive differentiation in our model. The predictions---that coupled vesicle networks spontaneously develop reproducible discrete codes---are directly testable.
+The following outlines a minimal benchtop implementation. All components use established techniques; the novelty is their combination.
+
+\textbf{1. Vesicle preparation.} Giant unilamellar vesicles (GUVs, 20--50 $\mu$m diameter) via electroformation from oleic acid/oleate mixtures (prebiotically plausible) or POPC (better characterized). Target: 50--100 vesicles per array. Oleic acid vesicles are pH-sensitive and support internal pH gradients; POPC vesicles are more stable and permit longer observation windows.
+
+\textbf{2. Internal oscillatory chemistry.} Three options in order of experimental tractability:
+\begin{itemize}[nosep]
+    \item \textit{Belousov-Zhabotinsky (BZ) reaction}: Well-characterized, visible color changes, period 30--120 s. Not prebiotically plausible but provides proof-of-concept. Encapsulate ferroin catalyst inside vesicles; malonic acid and bromate in external medium diffuse through membrane.
+    \item \textit{pH oscillators}: Simpler chemistry, prebiotically relevant. Thiosulfate-iodate-sulfite system oscillates with period 1--10 min. Monitor via pH-sensitive fluorophores (SNARF-1, BCECF).
+    \item \textit{NADH-based glycolytic oscillators}: Yeast extract provides the enzymatic machinery; period 1--5 min. Most biologically relevant but requires careful preparation.
+\end{itemize}
+
+\textbf{3. Array fabrication.} Microfluidic droplet trapping in PDMS wells (standard soft lithography). Hexagonal well geometry with 60--100 $\mu$m spacing. Wells should be shallow (20--30 $\mu$m) to confine vesicles to a 2D layer for imaging. Alternative: optical tweezers for precise positioning of smaller arrays ($<$20 vesicles).
+
+\textbf{4. Coupling mechanism.} Three routes:
+\begin{itemize}[nosep]
+    \item \textit{Diffusive}: Small signaling molecules (H$^+$, Ca$^{2+}$, acetate) diffuse through lipid bilayer or transient pores. Coupling strength tunable via membrane composition.
+    \item \textit{Channel-mediated}: Gramicidin A or alamethicin channels increase membrane permeability. Provides stronger, more controllable coupling.
+    \item \textit{Micelle-mediated}: Oil-in-water emulsions exchange material via micelle shuttling (as in Meredith et al. \cite{meredith2020predator}). Strongest coupling, easiest to observe.
+\end{itemize}
+
+\textbf{5. Substrate competition implementation.} The key mechanism requires multiple outputs competing for shared resource. Experimental realization: load vesicles with multiple fluorescent reporters (e.g., Fura-2 for Ca$^{2+}$, BCECF for pH, TMRM for membrane potential) that compete for excitation photons or shared cofactors. Alternatively, use enzymatic reactions sharing a common substrate (ATP, NAD$^+$).
+
+\textbf{6. Environmental control.} Microfluidic gradient generators create spatial concentration profiles across the array. Temperature gradients via Peltier elements. Temporal forcing via programmable LED illumination (for photosensitive chemistry) or pulsed reagent injection. The 32-condition protocol requires 5 binary controls: 2 spatial gradients $\times$ 2 temporal phases $+$ 1 global parameter.
+
+\textbf{7. Readout.} Widefield fluorescence microscopy with sCMOS camera (100+ fps for fast oscillations). Simultaneous multi-channel imaging via spectral unmixing or sequential filter switching. Boundary signals measured as fluorescence intensity in annular ROIs at vesicle periphery.
+
+\textbf{8. Predicted observables.}
+\begin{itemize}[nosep]
+    \item Vesicles in same environment converge to same boundary oscillation pattern (code)
+    \item Different environments produce distinguishable patterns (separation ratio $>$10$\times$)
+    \item Removing substrate competition (single reporter) collapses code diversity
+    \item Intermediate coupling strength maximizes code discriminability
+\end{itemize}
+
+\textbf{Estimated setup cost:} \$50--100K for microfluidics, fluorescence microscope, and environmental control. Timeline: 6--12 months to first reproducible code emergence demonstration.
+
+\medskip
+\noindent\textit{Note:} This protocol prioritizes experimental tractability over prebiotic plausibility. A stripped-down version using only oleic acid vesicles, pH oscillations, and diffusive coupling would be more prebiotically relevant but harder to control and observe.
 
 \medskip
 \noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
