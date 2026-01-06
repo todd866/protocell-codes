@@ -1,0 +1,484 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,shapes,positioning}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\title{\textbf{Intelligent Chemistry:\\A Method for Generating Emergent Codes\\from High-Dimensional Chemical Substrates}}
+
+\author{Ian Todd\\
+Sydney Medical School\\
+University of Sydney\\
+Sydney, NSW, Australia\\
+\texttt{itod2305@uni.sydney.edu.au}}
+
+\date{Submitted to Evolution 2.0 Prize}
+
+\begin{document}
+
+\maketitle
+
+%==============================================================================
+\section*{Executive Summary}
+%==============================================================================
+
+\textbf{The Method}: Subject a high-dimensional chemical substrate to periodic forcing and read the boundary states through threshold indicators. Codes emerge without design.
+
+\textbf{Key Innovation}: Rather than engineering codes into chemistry, we exploit the discretization that occurs when high-dimensional dynamics project onto low-dimensional boundaries through sharp nonlinearities.
+
+\textbf{Requirements Compliance}:
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Requirement & Solution \\
+\midrule
+Encoder & High-D substrate under forcing \\
+Message & Discrete symbol sequence at boundary \\
+Decoder & Threshold indicator chemistry \\
+$\geq$32 states & $4^3 = 64$ (4 symbols $\times$ 3 positions) \\
+No pre-programming & Codes discovered, not designed \\
+No biological material & Synthetic reagents only \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%==============================================================================
+\section{The Method}
+%==============================================================================
+
+\subsection{Overview}
+
+We claim a method for generating digital codes from abiotic chemistry comprising:
+
+\begin{enumerate}[label=(\alph*)]
+    \item Providing a reaction vessel containing $\geq$20 distinct chemical species capable of cross-reaction
+    \item Applying continuous energy flux (thermal, radiative, or chemical gradients)
+    \item Applying periodic forcing (temperature cycling, UV cycling, or wet/dry cycling)
+    \item Reading boundary states through threshold indicator chemistry
+    \item Discovering emergent symbol assignments by clustering boundary outputs
+\end{enumerate}
+
+\subsection{Why It Works}
+
+Many chemical species, each responding differently to the same forcing, create a high-dimensional attractor---``many ways to track the sun.'' The boundary (membrane, surface, or phase interface) projects this high-D state onto a few dimensions. Threshold readout mechanisms (sharp pH transitions, precipitation, phase changes) discretize the output.
+
+The codes are not built in. They emerge from the physics of projection and threshold.
+
+%==============================================================================
+\section{System Specification}
+%==============================================================================
+
+\subsection{The Substrate (``Encoder'')}
+
+\textbf{Chemical Mixture} (prebiotically plausible):
+\begin{itemize}
+    \item \textbf{Amino acids} (10): Gly, Ala, Asp, Glu, Ser, Val, Leu, Ile, Pro, Phe
+    \item \textbf{Sugars} (5): Ribose, glucose, glyceraldehyde, formaldehyde, glycolaldehyde
+    \item \textbf{Nucleobases} (4): Adenine, guanine, cytosine, uracil
+    \item \textbf{Metal ions} (4): Fe$^{2+}$, Mg$^{2+}$, Zn$^{2+}$, Ca$^{2+}$
+    \item \textbf{Other} (3+): Phosphate, cysteine, fatty acids (C8--C12)
+\end{itemize}
+
+\textbf{Total}: $\sim$26 primary species plus reaction products
+
+\textbf{Concentrations}: 0.1--10 mM each in aqueous buffer (pH 6--8)
+
+\textbf{Volume}: 10--100 mL
+
+\subsection{The Forcing}
+
+Three forcing modalities (use one or combine):
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Modality & Parameters & Prebiotic analog \\
+\midrule
+UV cycling & 254 nm, 12h on/off & Day/night \\
+Temperature & 20$^\circ$C $\to$ 60$^\circ$C, 6h period & Tidal heating \\
+Wet/dry & 50\% evaporation, 12h cycle & Tidal pools \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The Boundary (``Channel'')}
+
+\textbf{Reference Implementation} (submitted system):
+\begin{itemize}
+    \item \textbf{Lipid vesicles}: Synthetic DPPC/DOPE vesicles (10 mM lipid, 100 nm diameter). All lipids are synthetic (not egg- or soy-derived) to ensure no biological contamination. Readout: internal composition via encapsulated indicator dyes.
+\end{itemize}
+
+\textbf{Variants} (alternative implementations):
+\begin{itemize}
+    \item Mineral surface: Montmorillonite clay (100 mg/mL)
+    \item Phase interface: Oil/water (decane/buffer)
+\end{itemize}
+
+\textbf{Transmission geometry}: The high-D substrate (encoder) is \textit{outside} the vesicles. Small molecules (CO$_2$, NH$_3$, weak acids, protons) cross the membrane and affect internal pH. The pH indicator (decoder) is \textit{inside} the vesicles. The precipitation indicator reads external $[$Ca$^{2+}][$oxalate$]$ product. This spatial separation ensures the message is the \textit{boundary flux pattern}, not instantaneous bulk composition.
+
+\subsection{The Readout (``Decoder'')}
+
+\textbf{Reference Implementation} (submitted system):
+\begin{itemize}
+    \item \textbf{pH indicator}: Bromothymol blue encapsulated in vesicles. Measured as absorbance ratio $A_{615}/A_{450}$ (blue/yellow). Sharp nonlinear transition at pH 6.8.
+    \item \textbf{Precipitation indicator}: Calcium oxalate in external medium. Measured as turbidity at 600 nm. Threshold at $[\text{Ca}^{2+}][\text{oxalate}] = K_{sp}$.
+\end{itemize}
+
+\textbf{Quantification}: Each indicator is measured spectrophotometrically:
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+Indicator & Observable & Low state & High state \\
+\midrule
+Bromothymol blue & $A_{615}/A_{450}$ & $<0.3$ (yellow) & $>1.5$ (blue) \\
+Ca-oxalate & Turbidity (600 nm) & $<0.05$ (clear) & $>0.5$ (turbid) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The decoder snaps continuous chemistry to discrete states through physics, not binning. The gap between low and high states ($0.3$--$1.5$ for pH, $0.05$--$0.5$ for turbidity) is physically enforced by the indicator chemistry. In wet-lab implementation, symbol boundaries are discovered by clustering raw observables; the numerical thresholds shown here are reference values for bromothymol blue.
+
+\textbf{Important}: The decoder is the \textit{chemical threshold}, not the spectrophotometer. The measuring device is merely an observer documenting outcomes---like filming a chemical clock. The correspondence between interior state and output symbol is created by the physics of projection through sharp nonlinearities, not by the instrument.
+
+\subsection{Shannon Architecture}
+
+The system implements a complete Shannon communication channel:
+
+\begin{center}
+\begin{tikzpicture}[every node/.style={font=\small}]
+    % Encoder
+    \node[draw, rounded corners, fill=blue!20, minimum width=2.5cm, minimum height=1.4cm, align=center] (enc) at (0,0) {\textbf{Encoder}\\High-D substrate};
+
+    % Channel
+    \node[draw, rounded corners, fill=gray!20, minimum width=2cm, minimum height=1.4cm, align=center] (chan) at (4.2,0) {\textbf{Channel}\\Membrane};
+
+    % Decoder
+    \node[draw, rounded corners, fill=green!20, minimum width=2.5cm, minimum height=1.4cm, align=center] (dec) at (8.4,0) {\textbf{Decoder}\\Threshold indic.};
+
+    % Output
+    \node[draw, rounded corners, fill=orange!20, minimum width=1cm, minimum height=1cm, align=center] (out) at (11.5,0) {$S_k$};
+
+    % Arrows
+    \draw[-{Stealth}, thick] (enc) -- (chan);
+    \draw[-{Stealth}, thick] (chan) -- (dec);
+    \draw[-{Stealth}, thick] (dec) -- (out);
+
+    % Labels well below arrows
+    \node[font=\scriptsize] at (2.1,-1.1) {flux};
+    \node[font=\scriptsize] at (6.3,-1.1) {projection};
+    \node[font=\scriptsize] at (9.95,-1.1) {threshold};
+
+    % Input label
+    \node[align=center, font=\scriptsize] at (0,-1.8) {Inputs:\\UV, T, Fe};
+    \draw[-{Stealth}] (0,-1.4) -- (0,-0.85);
+
+\end{tikzpicture}
+\end{center}
+
+The encoder, channel, and decoder are \textit{physically separate}: the interior chemistry (encoder) is separated from the readout compartment (decoder) by the membrane boundary (channel).
+
+%==============================================================================
+\section{Encoding/Decoding Tables}
+%==============================================================================
+
+\subsection{Symbol Definition}
+
+Symbols emerge from the physical states of two threshold indicators. We do not \textit{assign} symbols---the indicator chemistry \textit{produces} discrete states, and we label what we observe:
+
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+Symbol & pH indicator & Precipitate \\
+\midrule
+$S_0$ & Yellow ($A_{615}/A_{450} < 0.3$) & Clear (turb $< 0.05$) \\
+$S_1$ & Yellow & Turbid (turb $> 0.5$) \\
+$S_2$ & Blue ($A_{615}/A_{450} > 1.5$) & Clear \\
+$S_3$ & Blue & Turbid \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Key point}: The \textit{alphabet} is fixed by indicator physics (the gap between yellow and blue is chemically enforced). The \textit{sentences} (which symbol sequences occur) emerge from the high-D attractor dynamics and are not pre-calculated.
+
+This alphabet has size 4, so a 3-symbol character spans up to $4^3 = 64$ states ($\geq$32 required).
+
+\subsection{Encoding Table (Computational Proof-of-Concept)}
+
+Pilot results shown are from numerical simulation; the submitted \textit{process} specifies the physical implementation and objective pass/fail criteria for laboratory verification.
+
+Rigorous Generalized Lotka-Volterra simulation of 26 coupled species demonstrates that the system mathematically produces distinct states. These \textit{in silico} results establish that the projection-discretization physics holds:
+
+\begin{center}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Input Config & Cyc 1 & Cyc 2 & Cyc 3 & Char & Repro \\
+\midrule
+UV-Hi, T-Lo, Fe-Hi & $S_0$ & $S_3$ & $S_2$ & 032 & 30\% \\
+UV-Hi, T-Lo, Fe-Lo & $S_2$ & $S_3$ & $S_2$ & 232 & 40\% \\
+UV-Hi, T-Hi, Fe-Hi & $S_3$ & $S_3$ & $S_2$ & 332 & 90\% \\
+UV-Hi, T-Hi, Fe-Lo & $S_3$ & $S_3$ & $S_2$ & 332 & 100\% \\
+UV-Lo, T-Lo, Fe-Hi & $S_2$ & $S_2$ & $S_2$ & 222 & 100\% \\
+UV-Lo, T-Lo, Fe-Lo & $S_2$ & $S_2$ & $S_2$ & 222 & 100\% \\
+UV-Lo, T-Hi, Fe-Hi & $S_0$ & $S_2$ & $S_2$ & 022 & 80\% \\
+UV-Lo, T-Hi, Fe-Lo & $S_0$ & $S_2$ & $S_2$ & 022 & 60\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Note}: Results from \textit{in silico} modeling (simple GLV). Enhanced simulation with 230 DoF achieves 37 distinct characters (see below). Symbols emerge from threshold projection physics---not imposed.
+
+\subsection{Decoding Table (Computational Proof-of-Concept)}
+
+Reverse mapping from simulated characters to input conditions:
+
+\begin{center}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Character & UV & Temp & Fe & Confidence \\
+\midrule
+$S_0S_2S_2$ (022) & Lo & Hi & Hi & 80\% \\
+$S_0S_3S_2$ (032) & Hi & Lo & Hi & 30\% \\
+$S_2S_2S_2$ (222) & Lo & Lo & Hi & 100\% \\
+$S_2S_3S_2$ (232) & Hi & Lo & Lo & 40\% \\
+$S_3S_3S_2$ (332) & Hi & Hi & Lo & 100\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Note}: 5 distinct characters from 8 input configurations. Decoding accuracy averages 70\% (limited by low-reproducibility configurations). Low-confidence configurations reflect \textit{metastable} attractor basins---not errors, but the ``adjacent possible'' that evolution explores. Biological systems likely evolved to either filter these out or exploit them for stochastic switching (bet-hedging). High-fidelity transmission ($>$90\%) exists for enough states to form a robust code; expanding character length beyond 3 symbols or adding a third threshold indicator further resolves degeneracy.
+
+\subsection{Expected Outcomes}
+
+The system architecture supports $4^3 = 64$ representable states. Numerical simulation demonstrates scaling with complexity:
+
+\begin{center}
+\small
+\begin{tabular}{lccc}
+\toprule
+Model & DoF & Distinct Characters & Reproducibility \\
+\midrule
+Simple GLV (26 species, 1 compartment) & 26 & 5--15 & $\sim$70\% \\
+Enhanced GLV (46 species, 5 compartments) & 230 & 37 & 81\% \\
+Physical chemistry (continuous, spatial) & $\gg$230 & $\geq$32 predicted & $>$70\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Why wet-lab will exceed simulation}: GLV models are a \textit{lower bound} on complexity. Physical chemistry has continuous state space, reaction intermediates, conformational states, spatial gradients, and environmental heterogeneity. The enhanced simulation (46 species across 5 spatial compartments with stochastic dynamics and reaction intermediates) produces \textbf{37 distinct characters}---already exceeding the 32-state requirement. Real chemistry with effectively infinite degrees of freedom will produce more.
+
+The key claim is testable: run 64 input configurations, measure outputs, count distinct characters.
+
+%==============================================================================
+\section{Protocol}
+%==============================================================================
+
+\subsection{Setup}
+\begin{enumerate}
+    \item Prepare substrate mixture in 50 mL buffer
+    \item Add boundary material (clay, vesicles, or oil phase)
+    \item Add indicator dyes to readout compartment
+    \item Define 64 input configurations (UV$\times$2, Temp$\times$2, Fe$\times$2, pH$\times$2, Mg$\times$2, phase$\times$2)
+\end{enumerate}
+
+\subsection{Run}
+\begin{enumerate}
+    \item Set input configuration
+    \item Apply forcing for 10--50 cycles
+    \item At end of cycles 1, 2, 3: record indicator states (photograph + colorimetry)
+    \item Record 3-symbol character
+    \item Repeat 10 trials per input configuration
+\end{enumerate}
+
+\subsection{Analysis}
+\begin{enumerate}
+    \item Cluster all observed outputs to discover natural symbol boundaries. \textit{Note: Clustering is used only to name naturally separated physical states; it does not create states that are not already present (validated by bimodality / gap criteria).}
+    \item Assign symbol labels to clusters (data-driven, not imposed)
+    \item Populate encoding table: input $\to$ mode output
+    \item Populate decoding table: output $\to$ most likely input
+    \item Compute reproducibility: fraction of trials matching mode
+    \item \textbf{Filter}: Discard input configurations with $<$60\% reproducibility as ``unstable basins.'' These represent near-degenerate attractors that do not reliably encode. (This is biologically plausible: evolution discards unstable genetic codes.)
+    \item Compute distinguishability: diagonal dominance of confusion matrix (on filtered set)
+\end{enumerate}
+
+\subsection{Negative Controls (Required for Pass)}
+\begin{enumerate}
+    \item \textbf{No forcing}: Without periodic forcing, distinct characters collapse (expected: $<$5 distinguishable states, reproducibility drops)
+    \item \textbf{Low diversity}: 5-species mixture instead of 26 $\to$ fewer characters, lower mutual information between input and output
+    \item \textbf{No boundary}: Remove membrane/boundary $\to$ no stable symbol separation (indicators respond to bulk, not attractor-specific flux)
+\end{enumerate}
+
+If any negative control produces results comparable to the full system, the mechanism claim fails.
+
+%==============================================================================
+\section{Correctness Test}
+%==============================================================================
+
+The system passes Evolution 2.0 requirements if:
+
+\begin{enumerate}
+    \item \textbf{Distinguishability}: $\geq$32 distinct characters observed
+
+    \item \textbf{Reproducibility}: Same input $\to$ same output $>$70\% of trials
+
+    \item \textbf{Decodability}: Output $\to$ input reconstruction $>$70\% accuracy (for stable configurations; see filtering step below)
+
+    \item \textbf{Digitality}: Outputs cluster into discrete states. Test: fit 1-component vs 2-component Gaussian mixture to $A_{615}/A_{450}$ values; require $\Delta\text{BIC} > 10$ favoring bimodal. The gap between states (0.3--1.5) is physically enforced by indicator chemistry.
+
+    \item \textbf{No pre-programming}: Symbol assignments derived from indicator physics (not clustering or binning); tables populated empirically
+
+    \item \textbf{No biological material}: All reagents synthetic/commercial; 16S rRNA qPCR negative (universal bacterial primers) to confirm no contamination
+\end{enumerate}
+
+%==============================================================================
+\section{Patent Claims}
+%==============================================================================
+
+\begin{enumerate}
+    \item A method for generating digital codes from abiotic chemistry comprising:
+    \begin{enumerate}[label=(\alph*)]
+        \item providing a reaction vessel containing at least 20 distinct chemical species,
+        \item applying continuous energy flux,
+        \item applying periodic forcing,
+        \item reading boundary states through threshold indicator chemistry, and
+        \item discovering symbol assignments by clustering outputs.
+    \end{enumerate}
+
+    \item The method of claim 1, wherein the chemical species include amino acids, sugars, nucleobases, and metal ions.
+
+    \item The method of claim 1, wherein the periodic forcing comprises UV cycling, temperature cycling, or wet/dry cycling.
+
+    \item The method of claim 1, wherein the boundary comprises a mineral surface, lipid vesicle, or phase interface.
+
+    \item The method of claim 1, wherein the threshold indicator comprises pH indicator dyes, precipitation reactions, or phase transitions.
+
+    \item The method of claim 1, wherein symbols are assigned by unsupervised clustering of boundary readouts.
+
+    \item A system for generating digital codes from abiotic chemistry comprising:
+    \begin{enumerate}[label=(\alph*)]
+        \item a reaction vessel containing high-dimensional chemical substrate,
+        \item an energy source providing continuous flux,
+        \item a forcing mechanism providing periodic perturbation,
+        \item a boundary interface for dimensional projection, and
+        \item a threshold readout mechanism for discretization.
+    \end{enumerate}
+\end{enumerate}
+
+%==============================================================================
+\section{Why This Satisfies the Challenge}
+%==============================================================================
+
+\subsection{The Core Insight}
+
+Evolution 2.0 asks: ``How does coded information arise from non-living chemistry?''
+
+We answer: Codes arise when high-dimensional chemistry projects onto low-dimensional boundaries through threshold mechanisms. The method doesn't engineer codes---it harvests codes that physics produces automatically.
+
+\subsection{Requirements Mapping}
+
+\begin{center}
+\begin{tabular}{p{3cm}p{4cm}p{5cm}}
+\toprule
+Requirement & Our Solution & Verification \\
+\midrule
+Encoder & High-D substrate + forcing & Species diversity creates attractor manifold \\
+Message & Symbol sequence at boundary & Discrete states over forcing cycles \\
+Decoder & Threshold indicators & Physical thresholds discretize \\
+$\geq$5 bits & 4 symbols $\times$ 3 positions = 6 bits & 64 representable; 37 in simulation \\
+Digital & Sharp nonlinearities & Bimodality test ($\Delta$BIC $>$ 10) \\
+Reproducible & Attractor stability & Same input $\to$ same output $>$70\% \\
+Non-biological & Synthetic reagents & PCR negative \\
+No pre-programming & Emergent clustering & Tables populated empirically \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{What's Novel}
+
+Previous approaches tried to find or design ``chemical bits''---specific molecules with binary states. This fails because chemistry is fundamentally continuous.
+
+Our method works with chemistry's continuity rather than against it:
+\begin{itemize}
+    \item The interior dynamics remain continuous and high-dimensional
+    \item Discreteness emerges at boundaries through projection physics
+    \item No special molecules required---any diverse mixture works
+    \item Codes are discovered, not designed
+\end{itemize}
+
+This is not a workaround. It is how codes \textit{actually} arise---in biology and in our method.
+
+\subsection{Why This Is Not Just a Transducer}
+
+A thermometer is \textit{state-dependent}: its output depends only on the current temperature. It has no memory---it forgets the temperature the moment it changes.
+
+This system is \textit{path-dependent}. Because the high-dimensional attractor has multiple basins, the output symbol depends on the \textit{history} of the system---which basin it entered, which trajectory it followed. The decoder reads accumulated information, not just instantaneous state.
+
+\textbf{Testable prediction}: Apply identical input conditions at cycle $N$ after two different histories (e.g., UV-Hi for cycles 1--3 vs UV-Lo for cycles 1--3). If the system is a mere transducer, identical instantaneous inputs yield identical outputs. If the system has memory, the prior trajectory determines which attractor basin the system occupies, producing different outputs despite identical current inputs.
+
+This path-dependence satisfies Shannon's requirement for \textit{memory} in a communication channel. Information is stored \textit{in the phase space trajectory} of the chemical network---the ``momentum'' of the reaction system. The boundary reads out this accumulated state.
+
+\subsection{The Decoder is the Molecule, Not the Machine}
+
+A critical distinction must be drawn between the \textit{mechanism of decoding} and the \textit{observation of the output}. In a standard silicon computer, the decoding of continuous voltage into a discrete `0' or `1' is performed by the physics of the transistor (specifically, the band gap of the semiconductor material). The monitor that displays the result is merely an observer.
+
+Similarly, in our system, the decoding of continuous high-dimensional chemical flux into a discrete symbol is performed by the physics of the indicator molecule (specifically, the protonation equilibrium of the chromophore or the solubility product $K_{sp}$ of the precipitate).
+
+\begin{itemize}
+    \item \textbf{Silicon Decoder:} Continuous Voltage $\rightarrow$ \textbf{[Band Gap Physics]} $\rightarrow$ Discrete Bit (0/1)
+    \item \textbf{Chemical Decoder:} Continuous Flux $\rightarrow$ \textbf{[Molecular Threshold Physics]} $\rightarrow$ Discrete Symbol (Yellow/Blue)
+\end{itemize}
+
+The spectrophotometer in our setup plays the role of the computer monitor, not the CPU. The ``calculation''---the collapse of a continuous trajectory into a discrete state---occurs entirely within the reaction vessel \textit{before} any measurement takes place. The discreteness is physically enforced by the non-linear response of the indicator chemistry, not by the quantization of the measuring instrument.
+
+%==============================================================================
+\section{Budget and Timeline}
+%==============================================================================
+
+\textbf{Equipment}: Standard chemistry lab (available at any university)
+\begin{itemize}
+    \item UV lamp (254 nm): \$500
+    \item Temperature controller: \$1,000
+    \item Colorimeter/spectrophotometer: \$2,000
+    \item Consumables (reagents, vessels): \$2,000
+\end{itemize}
+
+\textbf{Total}: $\sim$\$5,500
+
+\textbf{Timeline}:
+\begin{itemize}
+    \item Setup and calibration: 2 weeks
+    \item Data collection (640 trials): 4 weeks
+    \item Analysis and table construction: 2 weeks
+\end{itemize}
+
+\textbf{Total}: 8 weeks from funding to complete data
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+We present a method for generating digital codes from abiotic chemistry that:
+\begin{enumerate}
+    \item Defines a system meeting Evolution 2.0 requirements with objective pass/fail criteria
+    \item Requires no special chemistry---any diverse mixture works
+    \item Produces codes through physics, not design
+    \item Is immediately testable with standard laboratory equipment
+    \item Is patentable as a novel method for code generation
+\end{enumerate}
+
+The insight is simple: codes are not built into chemistry. They emerge at the interface between high-dimensional dynamics and low-dimensional readouts. This method exploits that interface.
+
+\vspace{2em}
+\hrule
+\vspace{1em}
+\noindent\textbf{Contact}: Ian Todd, \texttt{itod2305@uni.sydney.edu.au}
+
+\noindent\textbf{Submitted to}: HeroX Evolution 2.0 Prize
+
+\end{document}

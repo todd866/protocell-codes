@@ -1,0 +1,22 @@
+{
+  "M": 5000,
+  "N_max": 200,
+  "N_min": 5,
+  "gamma": 2.0,
+  "zeta": 1.5,
+  "k": 0.005,
+  "a": 2.0,
+  "m": 1.5,
+  "C_star": 0.5,
+  "N_ceiling": 50,
+  "kappa_C": 3.0,
+  "kappa_N": 2.0,
+  "f": 0.15,
+  "encounter_rate": 0.05,
+  "sigma_N": 10.0,
+  "sigma_C": 0.08,
+  "base_R": 1.0,
+  "generations": 10000,
+  "snapshot_interval": 100,
+  "seed": 42
+}
