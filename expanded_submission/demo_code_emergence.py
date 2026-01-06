@@ -26,7 +26,7 @@ def substrate_competition(activations, h=4, K=1.0):
     h > 1 creates winner-take-most dynamics.
     """
     powered = (activations / K) ** h
-    total = powered.sum() + 1  # +1 for unbound substrate
+    total = powered.sum() + 1  # +1 = unbound substrate pool (ε in Eq. 1; ε=1 here)
     return powered / total
 
 

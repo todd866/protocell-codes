@@ -223,10 +223,11 @@ No competition ($h = 1$) & 8/32 & 62.3\% & 2.1$\times$ \\
 Noisy input ($\pm 20\%$) & 32/32 & 94.8\% & 198,000$\times$ \\
 No temporal cycles & 12/32 & 71.2\% & 14$\times$ \\
 Random topology & 32/32 & 89.4\% & 12,400$\times$ \\
-No mean-centering & 32/32 & 98.1\% & $>$10,000$\times$ \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\textbf{Analysis robustness}: Mean-centering the boundary signals (subtracting the mean across channels before decoding) improves classification but is not required for code emergence. Without it, accuracy remains 98.1\% with separation $>$10,000$\times$. We include mean-centering in the full model as it represents a biologically plausible adaptation: receivers normalizing inputs relative to background substrate concentration, analogous to gain control in sensory systems.
 
 \textbf{Interpretation}: Substrate competition ($h > 1$) is \textit{essential}---without it, codes collapse to a handful of attractors with poor reproducibility. Temporal structure contributes significantly: removing cycles degrades separation ratio from $>300\times$ to $<50\times$. The system is robust to input noise and topology perturbations.
 
@@ -700,7 +701,7 @@ Several limitations constrain interpretation of these results:
 
 \textbf{Simulation without experimental validation.} This work presents computational proof-of-concept, not experimental demonstration. The framework generates testable predictions---coupled vesicle arrays should develop reproducible discrete boundary states---but these predictions remain untested.
 
-\textbf{Phenomenological dynamics.} The reservoir model is a generic proxy for high-dimensional reaction networks, not literal chemistry. Future work should implement explicit chemical kinetics, potentially building on established protocell simulation platforms \cite{shirtediss2025}.
+\textbf{Phenomenological dynamics.} The reservoir model (echo state network with $\tanh$ nonlinearity and spectral radius 0.92) is a generic proxy for high-dimensional reaction networks, not literal chemistry. We claim that three features are invariant to replacing it with explicit chemical reaction networks: (1) the substrate competition discretizer (Eq.~1), which maps continuous concentrations to winner-take-most outputs via any saturating kinetics; (2) the coupling topology constraint, which forces coordination through shared boundaries; and (3) the observability limitation, which restricts inter-compartment information to low-dimensional boundary signals regardless of internal complexity. Future work should implement explicit chemical kinetics, potentially building on established protocell simulation platforms \cite{shirtediss2025}, to verify this invariance claim.
 
 \textbf{What we explain vs. what we don't.} Our model explains why degeneracy is adaptive (basin-robustness correlation), why codes emerge (coordination pressure), and why ecological differentiation occurs (coherence costs). It does \textbf{not} explain the specific structure of the genetic code---why degeneracy concentrates at position 3, why certain amino acids have more codons than others, or why the code has error-correcting geometry. These require chemistry (tRNA structure, ribosome mechanics) not just dynamics.
 
