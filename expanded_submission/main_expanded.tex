@@ -9,6 +9,7 @@
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{enumitem}
+\usepackage{float}  % For [H] placement - figures where referenced, not floating
 
 \title{\textbf{From Chemistry to Ecology: Codes and Predation Emerge from Coherence Constraints in Protocell Networks}}
 
@@ -163,7 +164,7 @@ The complexity is not in the stimulus; it is in the system's ability to differen
 
 Figure~\ref{fig:architecture} illustrates the system architecture, showing the hexagonal vesicle array (A), the substrate competition mechanism (B), and the resulting environment-to-code mapping (C).
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig1_architecture.pdf}
 \caption{\textbf{Code emergence architecture.} (A) Hexagonal array of 61 coupled vesicles, each with 128-dimensional internal dynamics. Lines indicate neighbor coupling via boundary signals. (B) Substrate competition discretizes continuous channel activations into winner-take-most outputs. The equation shows the competitive normalization. (C) The system maps 32 environmental configurations (5-bit binary patterns) to 32 distinguishable code vectors. Each temporal cycle produces a 60-D vector; the full 4-cycle codeword is 240-D (see Code Definition box). In all reported decoding results, we use the 240-D concatenated codeword. Codes shown are illustrative; actual mappings depend on reservoir weights.}
@@ -295,7 +296,7 @@ D_{\text{eff}} = \frac{\left(\sum_i \lambda_i\right)^2}{\sum_i \lambda_i^2}
 \end{equation}
 where $\lambda_i$ are eigenvalues of the code covariance matrix.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig3_scale.pdf}
 \caption{\textbf{Scale dependence reveals the coordination ceiling.} (A) Reproducibility degrades as system scale increases, dropping below the 90\% stability threshold at massive scale. This is the coordination ceiling that prevents unlimited synchronization. (B) Effective dimensionality $D_{\text{eff}}$ grows sublinearly with total dimensions, scaling approximately as $N^{0.35}$. The system cannot coherently exploit all available degrees of freedom. (C) Manifold expansion under coupling (left axis: $D_{\text{eff}}$; right axis: separation ratio, log scale): both metrics increase with coupling strength $\kappa$, but separation peaks at intermediate coupling ($\kappa \approx 0.3$) before declining.}
@@ -573,7 +574,7 @@ Size difference (144 $\pm$ 0.8) is robust across 8 random seeds.
 
 Figure~\ref{fig:ecology} shows the emergent ecology. Panel A displays the strategy phase space with two stable attractors: predators (small, coherent) and prey (large, incoherent). The hard ceiling at $N = 40$ bounds the coherent region. Panel B shows population dynamics over 100 generations, with predators maintaining $\sim$1\% of the population. Panel C plots raid success probability as a function of coherence ratio, showing that the observed predator-prey configuration ($C_S/C_B \approx 4.4$) yields $\sim$77\% raid success.
 
-\begin{figure}[t]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig2_ecology.pdf}
 \caption{\textbf{Predator-prey ecology from coherence constraints.} (A) Strategy phase space showing size $N$ vs coherence $C$. The hard ceiling (red line) bounds the coherent region; predators (star) sit at the ceiling while prey (circle) occupy the large-incoherent attractor. Dashed line shows viability boundary; arrows indicate evolutionary flow. (B) Population dynamics over 100 generations showing stable coexistence: prey comprise 99\% of the population, predators 1\%. Dotted lines show equilibrium fractions. (C) Raid success probability increases with coherence ratio $C_S/C_B$. The observed ratio of 4.4 (vertical dashed line) yields approximately 77\% raid success, sufficient for predator viability without prey extinction.}
