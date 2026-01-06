@@ -38,10 +38,12 @@ def generate_environment_configs(n_envs: int, n_bits: int = None) -> list:
 
     For n_envs <= 2^n_bits, use all combinations.
     For n_envs > 2^n_bits, use random continuous values.
+
+    Note: n_bits is fixed to 5 to match N_ENV_BITS in code_emergence_core.
     """
     if n_bits is None:
-        # Determine bits needed
-        n_bits = max(5, int(np.ceil(np.log2(n_envs + 1))))
+        # FIXED to 5 bits to match code_emergence_core.N_ENV_BITS
+        n_bits = 5
 
     if n_envs <= 2**n_bits:
         # Use binary configurations
