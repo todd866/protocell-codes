@@ -338,6 +338,41 @@ Coupling $\kappa$ & $D_{\text{eff}}$ & Sep$_{\text{interface}}$ \\
 
 Separation peaks at intermediate coupling---the regime where compartments influence but do not dominate each other.
 
+\subsection{Chemistry-Based Validation}
+
+A potential objection to the reservoir computing model is that neural network dynamics are a ``toy model'' disconnected from prebiotic chemistry. To address this, we implemented a chemistry-based simulation using mass-action kinetics with explicit reaction networks.
+
+\textbf{Chemical Model:} Each vesicle contains 50 molecular species governed by three reaction types:
+\begin{enumerate}[nosep]
+\item \textbf{Autocatalytic}: $A + B \to 2A$ (random pairs, rate $k_{\text{auto}} \sim U[0.1, 0.5]$)
+\item \textbf{Conversion}: $A \to B$ (random pairs, rate $k_{\text{conv}} \sim U[0.05, 0.2]$)
+\item \textbf{Synthesis}: $A + B \to C$ (random triplets, rate $k_{\text{syn}} \sim U[0.01, 0.1]$)
+\end{enumerate}
+Each vesicle has $\sim$150 randomly generated reactions (50 autocatalytic, 50 conversion, 50 synthesis). Dynamics follow coupled ODEs with diffusive neighbor coupling:
+\begin{equation}
+\frac{d[\text{species}_i]}{dt} = \sum_{\text{reactions}} r_j + \mathcal{D} \sum_{\text{neighbors}} \left([\text{species}_i]_{\text{neighbor}} - [\text{species}_i]\right)
+\end{equation}
+Substrate competition operates on 15 output channels via Hill kinetics (Eq.~\ref{eq:substrate}) with $h = 4$.
+
+\textbf{Results:} We tested two configurations---a ``standard'' chemistry (15 species, 45 reactions) and a ``messy'' chemistry (50 species, 150 reactions) intended to model realistic prebiotic conditions with complex reaction networks:
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Configuration} & \textbf{Species} & \textbf{Unique Codes} & \textbf{Discretization} & \textbf{Runtime} \\
+\midrule
+Standard chemistry & 15 & 21/32 & 55\% & 42 sec \\
+Messy chemistry & 50 & 32/32 & 67\% & 34 min \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{The ``messier is better'' prediction:} Theory predicts that higher-dimensional chemical networks should produce \textit{better} codes, not worse ones. More species create more orthogonal directions for substrate competition to operate, enabling sharper discretization. The messy chemistry confirms this: 32/32 unique codes (no collisions) with 67\% discretization, compared to 21/32 codes and 55\% discretization for the standard chemistry.
+
+This result is significant because prebiotic environments were almost certainly ``messy''---containing complex mixtures of organic molecules rather than purified reagents. Our framework predicts this messiness is \textit{advantageous} for code emergence, not an obstacle to be overcome.
+
+\textbf{Note on computational cost:} The chemistry simulation requires solving stiff ODEs for autocatalytic dynamics, with some environments requiring 2--3 minutes per configuration. This is fundamentally different from the reservoir model (milliseconds per configuration) and reflects genuine chemical timescales. Full replication code is available at \url{https://github.com/todd866/protocell-codes}.
+
 %%% EXPANDED: NEW SECTION %%%
 %==============================================================================
 \section{Alternative Validation: Lewis Signaling Games}
