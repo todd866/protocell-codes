@@ -376,22 +376,24 @@ Each vesicle has $\sim$150 randomly generated reactions (50 autocatalytic, 50 co
 \end{equation}
 Substrate competition operates on 15 output channels via Hill kinetics (Eq.~\ref{eq:substrate}) with $h = 4$.
 
-\textbf{Results:} We tested two configurations---a ``standard'' chemistry (15 species, 45 reactions) and a ``messy'' chemistry (50 species, 150 reactions) intended to model realistic prebiotic conditions with complex reaction networks:
+\textbf{Critical methodological note:} The chemistry is created \textit{once} and tested across all 32 environments. Only initial conditions vary per trial. This properly tests whether a single reaction network can produce multiple distinguishable codes---unlike neural network weight matrices, which could be re-sampled per environment.
+
+\textbf{Results:} We tested two configurations---a ``standard'' chemistry (15 species, 30 reactions) and a ``messy'' chemistry (50 species, 150 reactions) intended to model realistic prebiotic conditions:
 
 \begin{center}
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-\textbf{Configuration} & \textbf{Species} & \textbf{Unique Codes} & \textbf{Discretization} & \textbf{Runtime} \\
+\textbf{Configuration} & \textbf{Species} & \textbf{Unique Codes} & \textbf{Discretization} & \textbf{Decode Accuracy} & \textbf{Runtime} \\
 \midrule
-Standard chemistry & 15 & 21/32 & 55\% & 42 sec \\
-Messy chemistry & 50 & 32/32 & 67\% & 34 min \\
+Standard chemistry & 15 & 12/32 & 66\% & 91\% & 18 sec \\
+Messy chemistry & 50 & 22/32 & 77\% & 100\% & 7 min \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\textbf{The ``messier is better'' prediction:} Theory predicts that higher-dimensional chemical networks should produce \textit{better} codes, not worse ones. More species create more orthogonal directions for substrate competition to operate, enabling sharper discretization. The messy chemistry confirms this: 32/32 unique codes (no collisions) with 67\% discretization, compared to 21/32 codes and 55\% discretization for the standard chemistry.
+\textbf{The ``messier is better'' prediction:} Theory predicts that higher-dimensional chemical networks should produce \textit{better} codes, not worse ones. More species create more orthogonal directions for substrate competition to operate, enabling sharper discretization. The messy chemistry confirms this: 22/32 unique codes with 77\% discretization and perfect decoding accuracy, compared to 12/32 codes and 66\% discretization for the standard chemistry.
 
-This result is significant because prebiotic environments were almost certainly ``messy''---containing complex mixtures of organic molecules rather than purified reagents. Our framework predicts this messiness is \textit{advantageous} for code emergence, not an obstacle to be overcome.
+The standard chemistry (15 species) cannot fully distinguish 32 environments because it lacks sufficient degrees of freedom---the attractor landscape has only $\sim$12 distinct basins. Adding species (50) expands the attractor space, enabling nearly twice as many distinguishable codes. This is not parameter tuning; it is a structural prediction of the theory.
 
 \textbf{Note on computational cost:} The chemistry simulation requires solving stiff ODEs for autocatalytic dynamics, with some environments requiring 2--3 minutes per configuration. This is fundamentally different from the reservoir model (milliseconds per configuration) and reflects genuine chemical timescales. Full replication code is available at \url{https://github.com/todd866/protocell-codes}.
 
