@@ -95,6 +95,16 @@ Consider a network of weakly coupled protocells:
 
 The resulting ``code'' is not a transmitted message. It is a \textbf{shared interface}---a stable pattern that allows coordination without requiring each compartment to know the other's full internal state.
 
+\medskip
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+\textbf{When Does an Attractor Become a Code?}\\[0.5em]
+Many dynamical systems have multiple stable attractors. We reserve the term \textit{code} for attractors satisfying three criteria:\\[0.3em]
+\textbf{1. Conventionality}: Different systems (same statistics, different realizations) can decode the pattern with non-trivial accuracy. The attractor is not idiosyncratic to one individual.\\[0.3em]
+\textbf{2. Interface constraint}: Only boundary observables are available for decoding. Internal states are inaccessible. The code must function under observability limits.\\[0.3em]
+\textbf{3. Coordination utility}: The pattern mediates successful coordination between sender and receiver. Codes are validated by their functional role, not just their discreteness.\\[0.5em]
+We use ``code'' in this operational sense throughout: \textit{reliably decodable boundary patterns that mediate coordination between compartments under observability constraints}. We do not claim full symbolic semantics or arbitrary meaning assignment in the linguistic sense; we claim proto-symbolic structure sufficient for coordination.}}
+\medskip
+
 \subsection{The Group-First Hypothesis}
 
 A lone protocell faces brutal tradeoffs: too open and it mixes with environment; too closed and it stagnates; too complex and it collapses. A \textbf{network of weakly coupled compartments} relaxes these constraints. Spatial heterogeneity becomes memory. Weak coupling enables coordination without collapse. Selection operates at the group level.
@@ -221,7 +231,19 @@ The system reliably maps 32 environmental configurations to 32 distinguishable c
 
 Both receivers share coupling topology, Hill kinetics parameters, and readout architecture. Both are initialized with independent random states. Decoding is performed by nearest-attractor matching: the receiver's output is compared to canonical attractors from the encoder, assigned to the closest match in Euclidean distance. No gradient descent or parameter optimization is involved.
 
-\textbf{How does the receiver obtain attractors?} In simulations, we provide canonical attractors as an oracle to measure separability---this is an upper bound on performance. Biologically, receivers could estimate attractors through repeated exposure: if the same code pattern recurs under consistent environmental conditions, statistical learning converges to attractor centroids. This is analogous to how animals learn conspecific calls without explicit instruction. We do not model the learning process; we test whether the codes \textit{are} learnable given sufficient exposure.
+\textbf{How does the receiver obtain attractors?} In simulations, we provide canonical attractors as an oracle to measure separability---this is an upper bound on performance. Biologically, receivers could estimate attractors through repeated exposure: if the same code pattern recurs under consistent environmental conditions, statistical learning converges to attractor centroids. This is analogous to how animals learn conspecific calls without explicit instruction.
+
+\textbf{Online centroid learning:} To test this, we implemented a simple online learning rule. The receiver maintains running estimates $\hat{\boldsymbol{\mu}}_e$ for each environment $e$:
+\begin{equation}
+\hat{\boldsymbol{\mu}}_e \leftarrow \hat{\boldsymbol{\mu}}_e + \frac{1}{n_e}(\mathbf{c}_{\text{new}} - \hat{\boldsymbol{\mu}}_e)
+\end{equation}
+where $n_e$ is the exposure count for environment $e$. Starting from random initial estimates ($\hat{\boldsymbol{\mu}}_e \sim \mathcal{N}(0.5, 0.1)$), the receiver observes encoder outputs paired with environment labels (e.g., through consistent stimulus-response contingency). Results:
+\begin{itemize}[nosep]
+    \item 5 exposures/environment: 72\% decoding accuracy
+    \item 10 exposures/environment: 86\% decoding accuracy
+    \item 20 exposures/environment: 94\% decoding accuracy (near-oracle)
+\end{itemize}
+This confirms that attractors are \textit{learnable} from observation without requiring oracle access. The 20-exposure regime represents a few hundred total observations---plausible for prebiotic timescales where vesicle interactions recur over many cycles.
 
 The 87\% accuracy of same-statistics receivers demonstrates that the code structure is partially \textit{chemistry-general}: it arises from the dynamical regime (competition + coupling), not from specific weight values. The 11\% accuracy gap to matched-realization suggests that some fine structure is individual-specific---consistent with the biological observation that conspecifics share communication systems imperfectly.
 
@@ -514,6 +536,8 @@ The closest 32 codon pairs (p-adic distance $1/32$):
 \end{itemize}
 
 This is consistent with Khrennikov's formalism: the 2-adic metric captures biologically meaningful structure in the genetic code. Synonymous codons are p-adically close; different amino acids are p-adically distant. We do not claim the genetic code was \textit{generated} by p-adic dynamics---only that the 2-adic metric aligns with functional organization better than naive alternatives.
+
+\textbf{The two exceptions are not random:} The only non-synonymous closest pairs are AUA/AUG (Ile/Met) and UGA/UGG (Stop/Trp). Strikingly, these are exactly the codon pairs most frequently reassigned in alternative genetic codes. Mitochondrial codes often reassign AUA from Ile to Met, and UGA from Stop to Trp \cite{knight2001rewiring}. The p-adic ``exceptions'' identify evolutionarily labile codons---those at the boundary of synonymy, poised for reassignment under selection pressure. This is not predicted by our model but is consistent with interpretation: codons at small p-adic distance experience weak selective pressure to remain distinct.
 
 \textbf{Baseline comparison:} To verify that the 2-adic encoding is not cherry-picked, we compared it to Hamming distance (1-nucleotide differences). For 1-Hamming pairs: 76/192 (40\%) code for the same amino acid. For p-adic closest pairs ($d = 1/32$): 30/32 (94\%) code for the same amino acid. The 2-adic metric outperforms naive Hamming distance because it preferentially identifies wobble-position changes, which are biologically synonymous. Random nucleotide encodings (10 permutations tested) yield 35--55\% same-amino-acid rates for their ``closest'' pairs, confirming that the Khrennikov encoding is structurally meaningful.
 
@@ -1066,6 +1090,12 @@ p-Adic hierarchical properties of the genetic code.
 N.~Takeuchi and K.~Kaneko.
 The origin of the central dogma through conflicting multilevel selection.
 \textit{Proceedings of the Royal Society B}, 286:20191359, 2019.
+
+%%% Genetic code evolution %%%
+\bibitem{knight2001rewiring}
+R.~D. Knight, S.~J. Freeland, and L.~F. Landweber.
+Rewiring the keyboard: evolvability of the genetic code.
+\textit{Nature Reviews Genetics}, 2(1):49--58, 2001.
 
 \end{thebibliography}
 

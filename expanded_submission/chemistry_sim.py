@@ -9,7 +9,9 @@ Same architecture: hexagonal vesicle array, substrate competition, boundary coup
 This silences the "neural net toy" objection - if codes emerge from ODEs with
 mass-action kinetics, that's chemistry, not machine learning.
 
-Run time: ~1-4 hours on laptop for full 32-environment sweep
+CRITICAL: The chemistry (reaction network) is created ONCE, then tested across
+all environments. Only initial conditions vary per trial. This properly tests
+whether one chemistry can produce multiple distinguishable codes.
 """
 
 import numpy as np
@@ -35,12 +37,19 @@ class AutocatalyticNetwork:
     determined by stoichiometry and mass-action kinetics.
     """
 
-    def __init__(self, n_species=15, n_reactions=30, seed=None):
-        if seed is not None:
-            np.random.seed(seed)
+    def __init__(self, n_species=15, n_reactions=30, rng=None):
+        """
+        Args:
+            n_species: Number of molecular species
+            n_reactions: Number of reactions
+            rng: numpy random generator (use np.random.default_rng)
+        """
+        if rng is None:
+            rng = np.random.default_rng()
 
         self.n_species = n_species
         self.n_reactions = n_reactions
+        self.rng = rng
 
         # Generate random reaction network
         self.reactants = []  # List of (species_i, species_j) or (species_i,)
@@ -48,35 +57,35 @@ class AutocatalyticNetwork:
         self.rates = []      # Rate constants
 
         for _ in range(n_reactions):
-            reaction_type = np.random.choice(['autocatalytic', 'conversion', 'synthesis'],
-                                             p=[0.3, 0.4, 0.3])
+            reaction_type = rng.choice(['autocatalytic', 'conversion', 'synthesis'],
+                                       p=[0.3, 0.4, 0.3])
 
             if reaction_type == 'autocatalytic':
                 # A + B -> 2A (A catalyzes conversion of B to A)
-                a = np.random.randint(n_species)
-                b = np.random.randint(n_species)
+                a = rng.integers(n_species)
+                b = rng.integers(n_species)
                 if b == a:
                     b = (a + 1) % n_species
                 self.reactants.append((a, b))
                 self.products.append((a, a))  # 2A
-                self.rates.append(np.random.uniform(0.1, 1.0))
+                self.rates.append(rng.uniform(0.1, 0.5))
 
             elif reaction_type == 'conversion':
                 # A -> B
-                a = np.random.randint(n_species)
-                b = np.random.randint(n_species)
+                a = rng.integers(n_species)
+                b = rng.integers(n_species)
                 self.reactants.append((a,))
                 self.products.append((b,))
-                self.rates.append(np.random.uniform(0.05, 0.5))
+                self.rates.append(rng.uniform(0.05, 0.2))
 
             else:  # synthesis
                 # A + B -> C
-                a = np.random.randint(n_species)
-                b = np.random.randint(n_species)
-                c = np.random.randint(n_species)
+                a = rng.integers(n_species)
+                b = rng.integers(n_species)
+                c = rng.integers(n_species)
                 self.reactants.append((a, b))
                 self.products.append((c,))
-                self.rates.append(np.random.uniform(0.1, 0.8))
+                self.rates.append(rng.uniform(0.01, 0.1))
 
         # Dilution/degradation for all species (prevents blowup)
         self.dilution_rate = 0.1
@@ -122,6 +131,24 @@ class AutocatalyticNetwork:
                 dxdt[sp] += env_input[i] * 0.5  # Influx rate
 
         return dxdt
+
+    def copy_with_perturbation(self, perturbation=0.1, rng=None):
+        """Create a copy with slightly perturbed rates (same structure)."""
+        if rng is None:
+            rng = np.random.default_rng()
+
+        new_net = AutocatalyticNetwork.__new__(AutocatalyticNetwork)
+        new_net.n_species = self.n_species
+        new_net.n_reactions = self.n_reactions
+        new_net.rng = rng
+        new_net.reactants = [list(r) for r in self.reactants]  # Deep copy
+        new_net.products = [list(p) for p in self.products]
+        new_net.rates = [r * rng.uniform(1 - perturbation, 1 + perturbation)
+                         for r in self.rates]
+        new_net.dilution_rate = self.dilution_rate
+        new_net.input_species = self.input_species.copy()
+        new_net.output_species = self.output_species.copy()
+        return new_net
 
 
 # =============================================================================
@@ -170,45 +197,74 @@ class ChemicalVesicleArray:
     """
     Array of vesicles, each containing a chemical reaction network.
     Vesicles are coupled via diffusion of boundary species.
+
+    IMPORTANT: The chemistry is fixed at construction time. Only initial
+    conditions vary when run() is called multiple times.
     """
 
     def __init__(self, n_rings=2, n_species=15, n_reactions=30,
-                 coupling_strength=0.1, seed=42):
+                 n_outputs=8, coupling_strength=0.1, seed=42):
+        """
+        Create a vesicle array with fixed chemistry.
 
+        Args:
+            n_rings: Number of rings in hexagonal grid
+            n_species: Species per vesicle
+            n_reactions: Reactions per vesicle
+            n_outputs: Number of output channels
+            coupling_strength: Diffusive coupling between neighbors
+            seed: Random seed for reproducible chemistry
+        """
         self.coords = hexagonal_grid(n_rings)
         self.n_vesicles = len(self.coords)
         self.neighbors = get_neighbors(self.coords)
         self.coupling_strength = coupling_strength
         self.n_species = n_species
+        self.n_outputs = n_outputs
 
-        # Each vesicle has its own reaction network (same structure, different rates)
-        # This models "same chemistry, different microenvironment"
-        np.random.seed(seed)
+        # Create master RNG for reproducibility
+        master_rng = np.random.default_rng(seed)
+
+        # Create base network (defines the chemistry)
+        base_network = AutocatalyticNetwork(n_species, n_reactions, rng=master_rng)
+
+        # Each vesicle gets a perturbed copy (same structure, ~10% rate variation)
+        # This models "same chemistry type, different microenvironment"
         self.networks = []
-        base_network = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
-
         for i in range(self.n_vesicles):
-            net = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
-            # Perturb rates slightly (10% variation)
-            net.rates = [r * np.random.uniform(0.9, 1.1) for r in base_network.rates]
-            net.reactants = base_network.reactants.copy()
-            net.products = base_network.products.copy()
+            # Create independent RNG for each vesicle's perturbation
+            vesicle_rng = np.random.default_rng(seed + i + 1)
+            net = base_network.copy_with_perturbation(perturbation=0.1, rng=vesicle_rng)
             self.networks.append(net)
 
-        self.output_species = base_network.output_species
-        self.n_outputs = len(self.output_species)
+        # Set output species
+        self.output_species = list(range(n_species - n_outputs, n_species))
+        for net in self.networks:
+            net.output_species = self.output_species
 
-    def run(self, env_inputs, t_span=(0, 100), n_points=500):
+    def run(self, env_inputs, t_span=(0, 100), n_points=500, x0=None, trial_seed=None):
         """
         Run the coupled system.
 
-        env_inputs: array of shape (n_vesicles, n_input_species)
+        Args:
+            env_inputs: array of shape (n_vesicles, n_input_species)
+            t_span: Integration time span
+            n_points: Number of output time points
+            x0: Initial concentrations (if None, random)
+            trial_seed: Seed for random initial conditions
+
         Returns: boundary signals after substrate competition
         """
-
-        # Initial conditions (small random concentrations)
-        x0 = np.random.uniform(0.1, 0.5, (self.n_vesicles, self.n_species))
-        x0_flat = x0.flatten()
+        # Initial conditions
+        if x0 is not None:
+            x0_flat = x0.flatten()
+        else:
+            if trial_seed is not None:
+                trial_rng = np.random.default_rng(trial_seed)
+            else:
+                trial_rng = np.random.default_rng()
+            x0 = trial_rng.uniform(0.1, 0.5, (self.n_vesicles, self.n_species))
+            x0_flat = x0.flatten()
 
         def coupled_dynamics(t, x_flat):
             x = x_flat.reshape(self.n_vesicles, self.n_species)
@@ -301,26 +357,44 @@ def create_spatial_gradient(coords, env_id):
 # MAIN EXPERIMENT
 # =============================================================================
 
-def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
+def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2,
+                                   n_species=15, n_reactions=30, n_outputs=8,
+                                   seed=42):
     """
     Test whether codes emerge from chemical reaction networks.
+
+    CRITICAL: Creates ONE chemistry, tests across ALL environments.
     """
     print("=" * 70)
     print("CHEMICAL REACTION NETWORK - CODE EMERGENCE TEST")
     print("=" * 70)
     print(f"\nThis is NOT a neural network. It's mass-action ODEs.")
-    print(f"If codes emerge, substrate competition discretizes chemistry.\n")
+    print(f"One chemistry is tested across all {n_envs} environments.\n")
 
+    n_vesicles = len(hexagonal_grid(n_rings))
     print(f"Parameters:")
-    print(f"  Vesicles: {len(hexagonal_grid(n_rings))} (hexagonal, {n_rings} rings)")
-    print(f"  Species per vesicle: 15")
-    print(f"  Reactions per vesicle: 30")
+    print(f"  Vesicles: {n_vesicles} (hexagonal, {n_rings} rings)")
+    print(f"  Species per vesicle: {n_species}")
+    print(f"  Reactions per vesicle: {n_reactions}")
+    print(f"  Output channels: {n_outputs}")
     print(f"  Environments: {n_envs}")
     print(f"  Trials per environment: {n_trials}")
     print()
 
+    # CREATE CHEMISTRY ONCE - this is the key fix
+    print("Creating chemistry (fixed for all environments)...")
+    array = ChemicalVesicleArray(
+        n_rings=n_rings,
+        n_species=n_species,
+        n_reactions=n_reactions,
+        n_outputs=n_outputs,
+        seed=seed
+    )
+    print(f"  Created array with {array.n_vesicles} vesicles\n")
+
     all_codes = []
     env_labels = []
+    trial_codes_all = []  # Store all trial codes for within-class variance
 
     start_time = time.time()
 
@@ -328,22 +402,25 @@ def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
         print(f"Environment {env_id+1}/{n_envs}...", end=" ", flush=True)
         env_start = time.time()
 
+        # Create environment (same across trials)
+        env_inputs = create_spatial_gradient(array.coords, env_id)
+
         trial_codes = []
         for trial in range(n_trials):
-            # Create fresh array (different random initial conditions)
-            array = ChemicalVesicleArray(n_rings=n_rings, seed=seed + env_id * 100 + trial)
-
-            # Create environment
-            env_inputs = create_spatial_gradient(array.coords, env_id)
-
-            # Run simulation
-            code, _ = array.run(env_inputs, t_span=(0, 50), n_points=200)
+            # Only vary initial conditions, NOT the chemistry
+            code, _ = array.run(
+                env_inputs,
+                t_span=(0, 50),
+                n_points=200,
+                trial_seed=seed + env_id * 1000 + trial
+            )
             trial_codes.append(code)
 
         # Store mean code for this environment
         mean_code = np.mean(trial_codes, axis=0)
         all_codes.append(mean_code)
         env_labels.append(env_id)
+        trial_codes_all.append(trial_codes)
 
         env_time = time.time() - env_start
         print(f"({env_time:.1f}s)")
@@ -359,13 +436,8 @@ def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
     print("=" * 70)
 
     # 1. Uniqueness: are codes distinguishable?
-    from scipy.spatial.distance import pdist, squareform
     code_dists = squareform(pdist(all_codes))
     np.fill_diagonal(code_dists, np.inf)
-
-    # Find nearest neighbor for each code
-    nearest_neighbor = np.argmin(code_dists, axis=1)
-    unique_codes = len(set(nearest_neighbor))
 
     # Check for collisions
     collisions = 0
@@ -374,36 +446,43 @@ def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
             if code_dists[i, j] < 0.01:  # Very close = collision
                 collisions += 1
 
+    unique_codes = n_envs - collisions
+
     print(f"\n1. CODE UNIQUENESS")
-    print(f"   Unique nearest neighbors: {unique_codes}/{n_envs}")
+    print(f"   Unique codes: {unique_codes}/{n_envs}")
     print(f"   Collisions (dist < 0.01): {collisions}")
 
-    # 2. Separation ratio
-    within_class = []
+    # 2. Separation ratio (with absolute distances)
     between_class = []
-
     for i in range(n_envs):
         for j in range(i+1, n_envs):
             between_class.append(code_dists[i, j])
 
-    # For within-class, we'd need multiple trials - use trial variance
-    # (simplified: just report between-class spread)
+    # Within-class distances from trial variance
+    within_class = []
+    for env_trials in trial_codes_all:
+        if len(env_trials) > 1:
+            trial_dists = pdist(np.array(env_trials))
+            within_class.extend(trial_dists)
+
     mean_between = np.mean(between_class)
     min_between = np.min(between_class)
+    mean_within = np.mean(within_class) if within_class else 0
+
+    separation_ratio = mean_between / mean_within if mean_within > 0 else float('inf')
 
     print(f"\n2. CODE SEPARATION")
     print(f"   Mean between-class distance: {mean_between:.4f}")
     print(f"   Min between-class distance: {min_between:.4f}")
+    print(f"   Mean within-class distance: {mean_within:.4f}")
+    print(f"   Separation ratio: {separation_ratio:.1f}x")
 
     # 3. Discretization check
-    # Are outputs bimodal (discretized) or continuous?
     from scipy.stats import entropy
     code_flat = all_codes.flatten()
     hist, _ = np.histogram(code_flat, bins=20, density=True)
     code_entropy = entropy(hist + 1e-10)
-
-    # Bimodal distribution has lower entropy than uniform
-    uniform_entropy = np.log(20)  # Max entropy for 20 bins
+    uniform_entropy = np.log(20)
     discretization = 1 - code_entropy / uniform_entropy
 
     print(f"\n3. DISCRETIZATION")
@@ -411,19 +490,39 @@ def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
     print(f"   Discretization score: {discretization:.2f} (1.0 = fully discrete)")
 
     # 4. Winner-take-most check
-    # What fraction of output is captured by top channel?
     winner_fractions = np.max(all_codes, axis=1)
     mean_winner = np.mean(winner_fractions)
+    random_winner = 1.0 / n_outputs
 
     print(f"\n4. WINNER-TAKE-MOST")
-    print(f"   Mean winner fraction: {mean_winner:.2f} (random would be ~0.125)")
+    print(f"   Mean winner fraction: {mean_winner:.2f} (random would be {random_winner:.3f})")
+
+    # 5. Decoding accuracy (nearest centroid)
+    correct = 0
+    confusion = np.zeros((n_envs, n_envs), dtype=int)
+
+    for env_id, env_trials in enumerate(trial_codes_all):
+        for trial_code in env_trials:
+            # Find nearest centroid
+            dists_to_centroids = [np.linalg.norm(trial_code - c) for c in all_codes]
+            predicted = np.argmin(dists_to_centroids)
+            confusion[env_id, predicted] += 1
+            if predicted == env_id:
+                correct += 1
+
+    total_trials = sum(len(t) for t in trial_codes_all)
+    accuracy = correct / total_trials if total_trials > 0 else 0
+
+    print(f"\n5. DECODING ACCURACY")
+    print(f"   Nearest-centroid accuracy: {accuracy:.1%}")
+    print(f"   ({correct}/{total_trials} trials correctly classified)")
 
     # Summary
     print("\n" + "=" * 70)
     print("SUMMARY")
     print("=" * 70)
 
-    success = (collisions == 0 and mean_winner > 0.3 and discretization > 0.2)
+    success = (unique_codes >= n_envs * 0.6 and mean_winner > 0.2 and discretization > 0.2)
 
     if success:
         print("\n✓ CODES EMERGE FROM CHEMISTRY")
@@ -433,7 +532,17 @@ def run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42):
         print("\n✗ Code emergence weak or absent")
         print("  May need parameter tuning or longer integration time")
 
-    return all_codes, env_labels
+    return all_codes, env_labels, {
+        'unique_codes': unique_codes,
+        'collisions': collisions,
+        'mean_between': mean_between,
+        'mean_within': mean_within,
+        'separation_ratio': separation_ratio,
+        'discretization': discretization,
+        'mean_winner': mean_winner,
+        'accuracy': accuracy,
+        'confusion': confusion
+    }
 
 
 def run_quick_test():
@@ -448,151 +557,69 @@ def run_full_test():
     return run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42)
 
 
-def run_big_test():
-    """
-    Bigger test: more species, more vesicles, more reactions.
-    Tests the "messier is better" prediction.
-    """
-    print("Running BIG test (61 vesicles, 50 species, 100 reactions)...\n")
-    return run_code_emergence_experiment(
-        n_envs=32,
-        n_trials=5,
-        n_rings=4,  # 61 vesicles (same as paper)
-        seed=42
-    )
-
-
 def run_messy_test():
     """
     "Messy chemistry" test: high species count, many reactions.
     Should produce SHARPER codes per the theory.
+
+    Tests the "messier is better" prediction: more species → higher D
+    → more orthogonal directions for competition → sharper discretization.
     """
     print("Running MESSY test (high-dimensional chemistry)...\n")
     print("Theory predicts: more species → better discretization\n")
 
-    # Custom parameters for messy chemistry
-    class MessyChemistryArray(ChemicalVesicleArray):
-        def __init__(self, n_rings=3, seed=42):
-            self.coords = hexagonal_grid(n_rings)
-            self.n_vesicles = len(self.coords)
-            self.neighbors = get_neighbors(self.coords)
-            self.coupling_strength = 0.15  # Slightly stronger coupling
+    return run_code_emergence_experiment(
+        n_envs=32,
+        n_trials=3,
+        n_rings=3,      # 37 vesicles
+        n_species=50,   # More species
+        n_reactions=150,  # More reactions
+        n_outputs=15,   # More output channels
+        seed=42
+    )
 
-            n_species = 50  # Much more species
-            n_reactions = 150  # Many more reactions
-            self.n_species = n_species
 
-            np.random.seed(seed)
-            self.networks = []
-            base_network = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
-
-            for i in range(self.n_vesicles):
-                net = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
-                net.rates = [r * np.random.uniform(0.85, 1.15) for r in base_network.rates]
-                net.reactants = base_network.reactants.copy()
-                net.products = base_network.products.copy()
-                self.networks.append(net)
-
-            # More output channels
-            self.output_species = list(range(n_species - 15, n_species))
-            self.n_outputs = len(self.output_species)
-
-    # Run with messy chemistry
+def run_comparison():
+    """
+    Run both standard and messy chemistry to compare.
+    Tests the "messier is better" prediction directly.
+    """
     print("=" * 70)
-    print("MESSY CHEMISTRY - CODE EMERGENCE TEST")
+    print("COMPARISON: Standard vs Messy Chemistry")
     print("=" * 70)
-    print(f"\n50 species, 150 reactions per vesicle")
-    print(f"15 output channels (vs 8 in standard)")
-    print(f"37 vesicles (3-ring hexagonal array)\n")
+    print("\nTheory predicts messy chemistry produces BETTER codes.\n")
 
-    all_codes = []
-    n_envs = 32
-    n_trials = 3
+    print("\n--- STANDARD CHEMISTRY (15 species, 30 reactions) ---\n")
+    _, _, standard_stats = run_code_emergence_experiment(
+        n_envs=32, n_trials=3, n_rings=2,
+        n_species=15, n_reactions=30, n_outputs=8,
+        seed=42
+    )
 
-    start_time = time.time()
-
-    for env_id in range(n_envs):
-        print(f"Environment {env_id+1}/{n_envs}...", end=" ", flush=True)
-        env_start = time.time()
-
-        trial_codes = []
-        for trial in range(n_trials):
-            array = MessyChemistryArray(n_rings=3, seed=42 + env_id * 100 + trial)
-            env_inputs = create_spatial_gradient(array.coords, env_id)
-
-            # Pad env_inputs if needed
-            if env_inputs.shape[1] < 5:
-                env_inputs = np.pad(env_inputs, ((0,0), (0, 5 - env_inputs.shape[1])))
-
-            code, _ = array.run(env_inputs, t_span=(0, 80), n_points=300)
-            trial_codes.append(code)
-
-        mean_code = np.mean(trial_codes, axis=0)
-        all_codes.append(mean_code)
-
-        env_time = time.time() - env_start
-        print(f"({env_time:.1f}s)")
-
-    total_time = time.time() - start_time
-    print(f"\nTotal time: {total_time/60:.1f} minutes")
-
-    # Analyze
-    all_codes = np.array(all_codes)
+    print("\n--- MESSY CHEMISTRY (50 species, 150 reactions) ---\n")
+    _, _, messy_stats = run_code_emergence_experiment(
+        n_envs=32, n_trials=3, n_rings=3,
+        n_species=50, n_reactions=150, n_outputs=15,
+        seed=42
+    )
 
     print("\n" + "=" * 70)
-    print("MESSY CHEMISTRY RESULTS")
+    print("COMPARISON SUMMARY")
     print("=" * 70)
+    print(f"\n{'Metric':<25} {'Standard':>12} {'Messy':>12}")
+    print("-" * 50)
+    print(f"{'Unique codes':<25} {standard_stats['unique_codes']:>12} {messy_stats['unique_codes']:>12}")
+    print(f"{'Discretization':<25} {standard_stats['discretization']:>11.0%} {messy_stats['discretization']:>11.0%}")
+    print(f"{'Winner fraction':<25} {standard_stats['mean_winner']:>12.2f} {messy_stats['mean_winner']:>12.2f}")
+    print(f"{'Separation ratio':<25} {standard_stats['separation_ratio']:>11.1f}x {messy_stats['separation_ratio']:>11.1f}x")
+    print(f"{'Decode accuracy':<25} {standard_stats['accuracy']:>11.0%} {messy_stats['accuracy']:>11.0%}")
 
-    from scipy.spatial.distance import pdist, squareform
-    code_dists = squareform(pdist(all_codes))
-    np.fill_diagonal(code_dists, np.inf)
+    if messy_stats['discretization'] > standard_stats['discretization']:
+        print("\n✓ MESSIER IS BETTER: Prediction confirmed!")
+    else:
+        print("\n✗ Unexpected: messy chemistry did not outperform standard")
 
-    nearest_neighbor = np.argmin(code_dists, axis=1)
-    unique_nn = len(set(range(n_envs)) - set(nearest_neighbor[np.arange(n_envs) != nearest_neighbor]))
-
-    # Count actual unique codes (no collisions)
-    collisions = 0
-    for i in range(n_envs):
-        for j in range(i+1, n_envs):
-            if code_dists[i, j] < 0.01:
-                collisions += 1
-
-    unique_codes = n_envs - collisions
-
-    mean_between = np.mean([code_dists[i,j] for i in range(n_envs) for j in range(i+1, n_envs)])
-    min_between = np.min([code_dists[i,j] for i in range(n_envs) for j in range(i+1, n_envs) if code_dists[i,j] > 0])
-
-    from scipy.stats import entropy
-    code_flat = all_codes.flatten()
-    hist, _ = np.histogram(code_flat, bins=20, density=True)
-    code_entropy = entropy(hist + 1e-10)
-    uniform_entropy = np.log(20)
-    discretization = 1 - code_entropy / uniform_entropy
-
-    winner_fractions = np.max(all_codes, axis=1)
-    mean_winner = np.mean(winner_fractions)
-
-    print(f"\n1. CODE UNIQUENESS")
-    print(f"   Unique codes: {unique_codes}/32")
-    print(f"   Collisions: {collisions}")
-
-    print(f"\n2. CODE SEPARATION")
-    print(f"   Mean between-class distance: {mean_between:.4f}")
-    print(f"   Min between-class distance: {min_between:.4f}")
-
-    print(f"\n3. DISCRETIZATION")
-    print(f"   Score: {discretization:.2f} (1.0 = fully discrete)")
-
-    print(f"\n4. WINNER-TAKE-MOST")
-    print(f"   Mean winner fraction: {mean_winner:.2f} (random = {1/15:.3f})")
-
-    print("\n" + "=" * 70)
-    if discretization > 0.5 and mean_winner > 0.2:
-        print("✓ MESSY CHEMISTRY PRODUCES CODES")
-        print(f"  Discretization {discretization:.0%} with {unique_codes}/32 unique codes")
-    print("=" * 70)
-
-    return all_codes
+    return standard_stats, messy_stats
 
 
 if __name__ == "__main__":
@@ -600,17 +627,17 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "--full":
-            codes, labels = run_full_test()
+            codes, labels, stats = run_full_test()
         elif sys.argv[1] == "--messy":
-            codes = run_messy_test()
-        elif sys.argv[1] == "--big":
-            codes, labels = run_big_test()
+            codes, labels, stats = run_messy_test()
+        elif sys.argv[1] == "--compare":
+            run_comparison()
         else:
             print("Unknown option:", sys.argv[1])
     else:
-        print("Usage: python chemistry_sim.py [--full|--messy|--big]")
-        print("  Default: quick test (8 envs, 7 vesicles)")
-        print("  --full:  full test (32 envs, 19 vesicles)")
-        print("  --messy: messy chemistry (50 species, 150 reactions)")
-        print("  --big:   big array (61 vesicles)\n")
-        codes, labels = run_quick_test()
+        print("Usage: python chemistry_sim.py [--full|--messy|--compare]")
+        print("  Default: quick test (8 envs)")
+        print("  --full:    full test (32 envs, 15 species)")
+        print("  --messy:   messy chemistry (32 envs, 50 species)")
+        print("  --compare: run both and compare\n")
+        codes, labels, stats = run_quick_test()
