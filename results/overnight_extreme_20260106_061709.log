@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "<string>", line 21, in <module>
-AttributeError: module 'overnight_run' has no attribute 'main'
-EXTREME SCALE: 217 vesicles, 768D, 25 trials

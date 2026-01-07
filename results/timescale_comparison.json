@@ -1,0 +1,15 @@
+{
+  "fast": {
+    "unique_codes": 4,
+    "d_eff": 1.093498935998369,
+    "accuracy": 0.1875,
+    "timescale": "uniform fast"
+  },
+  "mixed": {
+    "unique_codes": 2,
+    "d_eff": 1.0000000000000107,
+    "accuracy": 0.25,
+    "timescale": "mixed (30% slow, 70% fast)",
+    "slow_factor": 0.01
+  }
+}

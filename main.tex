@@ -1,0 +1,563 @@
+% FOCUSED VERSION - Dimensionality threshold paper
+% Expanded material (Lewis games, basin structure, predator-prey) moved to 63_evox_expanded
+
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{float}
+
+\title{\textbf{Why Abiogenesis Experiments Produce Building Blocks But Not Codes:\\ An Effective Dimensionality Threshold}}
+
+\author{Ian Todd\\
+Sydney Medical School\\
+University of Sydney\\
+Sydney, NSW, Australia\\
+\texttt{itod2305@uni.sydney.edu.au}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+%==============================================================================
+\begin{abstract}
+%==============================================================================
+Seventy years of abiogenesis research have produced amino acids, nucleotides, lipid vesicles, and ribozymes---but no codes. We propose an explanation: \textbf{code emergence requires sufficient effective dimensionality that most experiments do not reach}. Using simulations of coupled protocellular compartments, we show that discrete, decodable conventions emerge only when the chemical system produces outputs spanning multiple orthogonal directions. The mechanism is substrate competition: competitive binding for shared resources discretizes continuous chemical gradients into stable boundary codes.
+
+Two key findings emerge. First, \textit{raw species count is not sufficient}---what matters is effective dimensionality ($D_{\text{eff}}$), measured as the participation ratio of output codes. Simulations show that 15 species achieve $D_{\text{eff}} = 1.3$ and 83\% accuracy, while 50 species converging to the same outputs collapse to $D_{\text{eff}} = 1.0$ and only 57\% accuracy. Second, \textit{structured timescale separation improves incipient coding capacity}: random rate variation does not help (and can hurt), but when slow reactions correspond to stable product formation---as in realistic prebiotic chemistry---mixed timescales produce 5$\times$ higher accuracy than uniform timescales (31\% vs 6\%). Absolute accuracy remains low in both cases, but this demonstrates that natural timescale structure provides the scaffolding on which codes can begin to emerge.
+
+These findings suggest why abiogenesis experiments fail and offer a hypothesis about RNA/DNA evolution. Most experiments lack slow components to provide scaffolding. If RNA served as an early slow scaffold, it may have enabled codes to emerge. Once codes exist, our framework predicts selective pressure for even slower scaffolds---suggesting that DNA evolution, rather than being accidental, may have been driven by the informational advantage of increased stability. The formose reaction, with autocatalytic loops and potential for timescale separation, may be the closest experimental paradigm to code-emergence conditions.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords:} origin of life; effective dimensionality; proto-codes; protocells; substrate competition; participation ratio
+
+\medskip
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+\textbf{What is a ``code''?} Throughout this paper, we use \textit{code} operationally: a mapping from environmental states to discrete, stable output patterns that can be reliably decoded by a receiver. Specifically: (1) different environments produce distinguishable outputs (unique codes), (2) the same environment produces consistent outputs across trials (stability), and (3) a receiver can identify the environment from the output alone (decodability). We measure these via unique code clusters, within-class variance, and leave-one-out decode accuracy.}}
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+\subsection{The Missing Codes}
+
+The origin of the genetic code remains one of the deepest puzzles in biology. Decades of experimental work have demonstrated prebiotic synthesis of nucleotides \cite{powner2009synthesis,sutherland2016origin} and self-assembly of protocell compartments \cite{szostak2001synthesizing,chen2004emergence}. These are major achievements in \textit{chemistry}. But they do not address the \textit{coding} problem: how did discrete, symbolic information arise from continuous chemical processes?
+
+\textbf{A clarification about ``code.''} We do not address the origin of the genetic code (codon$\to$amino-acid mapping). Instead, we study a logically prior question: how can \textit{any} discrete, decodable conventions emerge at protocell interfaces? Such boundary codes---stable, distinguishable output patterns that reliably signal environmental states---could serve as the precursor substrate upon which more sophisticated genetic encoding later built. Without such proto-codes, there is nothing for selection to refine into codon tables.
+
+We propose an explanation for the absence of proto-codes in experiments: \textbf{code emergence requires sufficient effective dimensionality ($D_{\text{eff}}$), and most abiogenesis experiments do not reach this threshold}.
+
+\subsection{The Effective Dimensionality Hypothesis}
+
+Consider what ``code emergence'' requires. A code is a reliable mapping from states to symbols---continuous chemical gradients must become discrete, distinguishable outputs. This discretization requires:
+\begin{enumerate}
+    \item Sufficient orthogonal directions to create distinct attractor basins
+    \item Nonlinear dynamics (substrate competition) to sharpen boundaries
+    \item Coordination constraints from coupling and shared observability
+\end{enumerate}
+
+The key insight is that \textit{species count alone is not sufficient}. Many species competing for the same output channels create smoother dynamics within a low-dimensional subspace, not higher-dimensional codes. What matters is \textbf{effective dimensionality}: how many orthogonal directions the output codes actually span.
+
+\subsection{Contributions}
+
+We make four contributions:
+\begin{enumerate}
+    \item A mechanism---\textbf{substrate competition}---that produces discrete codes from continuous chemistry
+    \item Identification of \textbf{effective dimensionality} ($D_{\text{eff}}$, measured as participation ratio) as the key predictor of code quality---not species count
+    \item Simulation demonstrating that more species can mean \textit{lower} $D_{\text{eff}}$ and worse codes
+    \item Analysis of major abiogenesis paradigms explaining their low $D_{\text{eff}}$
+\end{enumerate}
+
+%==============================================================================
+\section{The Substrate Competition Mechanism}
+\label{sec:mechanism}
+%==============================================================================
+
+\subsection{Competitive Binding Dynamics}
+
+We propose that codes emerge through \textbf{substrate competition}: multiple molecular species compete for shared substrates via competitive binding. The key is Hill-like competitive kinetics:
+\begin{equation}
+\text{output}_i = \frac{a_i^h}{\sum_j a_j^h + S_0}
+\label{eq:hill}
+\end{equation}
+where $a_i$ is the activation of species $i$, $h$ is the Hill coefficient, and $S_0$ represents the unbound substrate pool. This form arises from quasi-steady-state analysis of competitive enzyme kinetics \cite{cornish1995}. The $S_0$ term controls competition intensity: when $S_0 \ll \sum_j a_j^h$, competition is intense; when $S_0 \gg \sum_j a_j^h$, outputs are graded and proportional to activation.
+
+The competitive binding mechanism normalizes outputs: each species receives a fraction of available substrate proportional to its relative activation. This creates \textbf{mutual exclusion} that discretizes continuous inputs into distinguishable patterns.
+
+\subsection{Why This Produces Codes}
+
+Consider a protocell receiving environmental signals (pH, ion gradients, metabolite concentrations). These continuous inputs drive internal dynamics. Without substrate competition, outputs would be unconstrained---varying independently without mutual inhibition. With substrate competition, outputs are normalized and constrained:
+\begin{itemize}
+    \item Allocated fractions plus the unbound pool sum to exactly 1: $\sum_i \text{output}_i + S_0/(\sum_j a_j^h + S_0) = 1$. The ``missing fraction'' is the unbound substrate pool---an implicit $(N_{\text{outputs}}+1)$th channel representing available resource slack.
+    \item Patterns become distinguishable (relative, not absolute, activations matter)
+    \item Different environments produce different normalized patterns
+\end{itemize}
+
+The result is a \textit{code}: a mapping from environmental states to distinguishable output patterns.
+
+\subsection{The Dimensionality Requirement}
+
+But discretization alone is not sufficient. For a code to be \textit{useful}, it must have enough distinct symbols to encode relevant distinctions. This requires sufficient \textbf{effective dimensionality}---not merely many chemical species, but species whose dynamics are functionally orthogonal.
+
+We distinguish two quantities:
+\begin{itemize}
+    \item \textbf{Species count}: Number of chemical species present
+    \item \textbf{Effective dimensionality} ($D_{\text{eff}}$): Number of orthogonal directions the output codes actually span
+\end{itemize}
+
+$D_{\text{eff}}$ is measured as the participation ratio of the output covariance matrix:
+\begin{equation}
+D_{\text{eff}} = \frac{(\sum_i \lambda_i)^2}{\sum_i \lambda_i^2}
+\label{eq:deff}
+\end{equation}
+where $\lambda_i$ are the eigenvalues. $D_{\text{eff}} = 1$ means all variance lies in one direction (low-D); $D_{\text{eff}} = n$ means variance is spread equally across $n$ orthogonal directions (high-D).
+
+The crucial insight: \textit{more species does not guarantee higher $D_{\text{eff}}$}. If 50 species all compete for the same output channels, they create smoother dynamics within a low-dimensional subspace, not higher-dimensional codes. The attractor landscape depends on reaction topology, not species count alone.
+
+%==============================================================================
+\section{Simulation: The Threshold in Action}
+\label{sec:simulation}
+%==============================================================================
+
+\subsection{Model Setup}
+
+We simulate coupled protocellular compartments using mass-action chemical kinetics (not neural networks). Each compartment contains:
+\begin{itemize}
+    \item $N$ chemical species with random reaction network
+    \item Autocatalytic loops (required for multistability)
+    \item Substrate competition at the output (Eq.~\ref{eq:hill})
+    \item Coupling to neighbors through boundary diffusion
+\end{itemize}
+
+We test two conditions:
+\begin{itemize}
+    \item \textbf{Standard chemistry}: 15 species, 30 reactions, 8 output channels
+    \item \textbf{High-species chemistry}: 50 species, 100 reactions, 8 output channels
+\end{itemize}
+
+Both use identical substrate competition ($h = 4$), coupling topology (19 vesicles, 2 hexagonal rings), and readout dimensionality (8 output channels). The only difference is the number of internal species.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llcc}
+\toprule
+\textbf{Parameter} & \textbf{Description} & \textbf{Standard} & \textbf{High-species} \\
+\midrule
+$N_{\text{species}}$ & Species per vesicle & 15 & 50 \\
+$N_{\text{reactions}}$ & Reactions per vesicle & 30 & 100 \\
+$N_{\text{outputs}}$ & Output channels & 8 & 8 \\
+$N_{\text{vesicles}}$ & Vesicles (2 rings) & 19 & 19 \\
+$h$ & Hill coefficient & 4 & 4 \\
+$S_0$ & Unbound substrate pool & 1.0 & 1.0 \\
+$\kappa$ & Coupling strength & 0.1 & 0.1 \\
+$T$ & Integration time & 50 & 50 \\
+$N_{\text{envs}}$ & Environments tested & 32 & 32 \\
+$N_{\text{trials}}$ & Trials per environment & 3 & 3 \\
+\bottomrule
+\end{tabular}
+\caption{Simulation parameters. Only species count and reactions vary between conditions; all other parameters are held constant for fair comparison.}
+\label{tab:params}
+\end{table}
+
+\subsection{Implementation Details}
+
+Codes are vectors in $\mathbb{R}^{N_{\text{outputs}}}$ representing the mean boundary signal across vesicles at steady state. For computing $D_{\text{eff}}$ and unique codes, we average across trials to obtain one representative code per environment. For computing decode accuracy, we use \textbf{trial-level leave-one-out}: for each individual trial, we build centroids from all \textit{other} trials (including other trials from the same environment), then classify the held-out trial. This tests both across-environment separability and within-environment consistency.
+
+Unique codes are counted by constructing a collision graph: two codes are ``colliding'' if their Euclidean distance is less than $\epsilon = 0.01$. We then count connected components. We test sensitivity to $\epsilon$ in the range 0.001--0.05 and find qualitative results are robust.
+
+Reaction networks are generated by randomly sampling reactants, products, and rate constants for each reaction type (unimolecular, bimolecular, autocatalytic). Rate constants span 2 orders of magnitude by default. Environments are encoded as spatial gradients over the vesicle array. All code is available at the repository listed in Data Availability.
+
+\subsection{Protocol}
+
+We expose the same chemistry to 32 different environmental configurations (random input vectors) and measure:
+\begin{enumerate}
+    \item \textbf{Unique codes}: How many distinct output attractors emerge? (via connected components of collision graph)
+    \item \textbf{Effective dimensionality} ($D_{\text{eff}}$): Participation ratio of output codes (Eq.~\ref{eq:deff})
+    \item \textbf{Decode accuracy}: Can a receiver distinguish environments from outputs? (leave-one-out nearest-centroid)
+    \item \textbf{Separation ratio}: How much greater is between-class distance than within-class distance?
+\end{enumerate}
+
+\subsection{Results}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Chemistry} & \textbf{Species} & \textbf{$D_{\text{eff}}$} & \textbf{Unique Codes} & \textbf{Accuracy} & \textbf{Separation} \\
+\midrule
+Standard & 15 & 1.30 & 18/32 & 83\% & 536$\times$ \\
+High-species & 50 & 1.00 & 8/32 & 57\% & 205$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Code emergence depends on \textit{effective} dimensionality, not species count. Despite having more species, the 50-species chemistry collapses to lower $D_{\text{eff}}$ and produces worse codes. The 50 species converge to the same 8 output channels, creating smoother dynamics within a low-dimensional subspace rather than spanning additional orthogonal directions.}
+\label{tab:results}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_confusion_matrix.pdf}
+\caption{\textbf{Confusion matrices for code emergence.} (A) Standard chemistry (15 species, $D_{\text{eff}} = 1.30$): 18 distinct codes emerge from 32 environments, with 83\% decode accuracy. (B) High-species chemistry (50 species, $D_{\text{eff}} = 1.00$): Despite more species, only 8 distinct codes emerge with 57\% accuracy. The additional species converge to the same output channels rather than creating orthogonal directions.}
+\label{fig:confusion}
+\end{figure}
+
+\subsection{Ensemble Validation}
+
+To confirm that $D_{\text{eff}}$ predicts code quality across diverse chemistries (not just the two examples above), we ran 30 random seeds for each of four species counts (15, 25, 35, 50). Figure~\ref{fig:ensemble} shows the result: decode accuracy correlates positively with $D_{\text{eff}}$ ($r = 0.32$, $p < 0.001$, $n = 120$), while species count alone correlates \textit{negatively} with accuracy ($r = -0.24$, $p < 0.01$).
+
+\textbf{Evidence for a threshold at $D_{\text{eff}} > 1$}. When we partition the 120 chemistries by whether $D_{\text{eff}}$ exceeds 1.0 (the minimum possible value, indicating collapsed dynamics):
+\begin{itemize}
+    \item \textbf{Collapsed} ($D_{\text{eff}} \approx 1.0$, N=66): mean accuracy lower, fewer achieve high accuracy
+    \item \textbf{Diverse} ($D_{\text{eff}} > 1.0$, N=54): mean accuracy higher, majority achieve high accuracy
+\end{itemize}
+The threshold is sharp: $D_{\text{eff}} = 1$ means all codes lie on a single axis (1-dimensional code space), making discrimination inherently difficult. Any diversity ($D_{\text{eff}} > 1$) dramatically improves code quality. The typical outcome of adding species is \textit{lower} $D_{\text{eff}}$---more species competing for the same outputs creates smoother, more averaged dynamics rather than additional orthogonal directions.
+
+\textbf{Two thresholds, two phenomena.} We distinguish (1) the \textbf{collapse threshold} ($D_{\text{eff}} > 1$): escape from 1-dimensional dynamics, enabling \textit{some} decodability; and (2) the \textbf{robust communication threshold} ($D_{\text{eff}} \gtrsim 2$--4): sufficient orthogonal directions for reliable multi-symbol encoding with error tolerance. The simulations in this paper demonstrate the collapse threshold. Achieving robust 32-state communication---as required for digital messaging---likely requires $D_{\text{eff}} \geq 2$, which our simple random networks rarely reach but more sophisticated architectures (with temporal structure and higher readout dimensionality) can achieve.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/fig_ensemble_scatter.pdf}
+\caption{\textbf{$D_{\text{eff}}$ predicts code quality across random chemistries.} Scatter plot of decode accuracy vs effective dimensionality across 120 random chemistries (30 seeds $\times$ 4 species counts). $D_{\text{eff}}$ correlates positively with accuracy ($r = 0.32$, $p < 0.001$); species count correlates negatively ($r = -0.24$, $p < 0.01$). Colors indicate species count.}
+\label{fig:ensemble}
+\end{figure}
+
+\subsection{Why More Species Can Mean Lower Dimensionality}
+
+A surprising result emerges: \textbf{more species does not guarantee better codes}. The 50-species chemistry performs \textit{worse} than the 15-species chemistry despite having more internal degrees of freedom. Why?
+
+The key is the distinction between species count and effective dimensionality. All 50 species compete for the same 8 output channels via substrate competition. More competitors for the same outputs creates smoother, more averaged dynamics---not more orthogonal directions. The additional species act as ``noise averaging'' rather than information diversification.
+
+For code emergence, what matters is \textbf{functional orthogonality}:
+\begin{itemize}
+    \item Species must create \textit{independent} information pathways
+    \item Adding species that compete for the same outputs \textit{reduces} $D_{\text{eff}}$
+    \item The reaction network topology determines whether species diverge or converge
+\end{itemize}
+
+This has important implications: ``messier'' chemistry is necessary but not sufficient. The mess must be \textit{structured}---different species groups must connect to different output channels, creating multiple independent pathways for information encoding.
+
+\subsection{Mechanism Requirements}
+\label{sec:ablations}
+
+The ensemble results establish that topology matters more than species count. But what mechanisms are necessary for codes to emerge? We tested three ablations across 10 random chemistries (20 species, 16 environments each):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{Accuracy} & \textbf{$D_{\text{eff}}$} & \textbf{Key Result} \\
+\midrule
+Baseline ($h=4$, $\kappa=0.1$) & 72.5\% & 1.14 & --- \\
+Graded ($h=1$) & 87.5\% & 1.34 & \textit{better than baseline} \\
+Isolated ($\kappa=0$) & 68.8\% & --- & coupling matters \\
+\bottomrule
+\end{tabular}
+\caption{Mechanism ablations. Surprisingly, graded competition ($h=1$) outperforms cooperative binding ($h=4$). Inter-vesicle coupling is necessary for coordination.}
+\label{tab:ablations}
+\end{table}
+
+Two findings emerge:
+
+\textbf{Coupling is necessary.} Removing inter-vesicle coupling ($\kappa=0$) reduces accuracy from 72.5\% to 68.8\%. Without coupling, vesicles cannot coordinate their output patterns, reducing consistency.
+
+\textbf{Cooperative binding ($h > 1$) is not required.} Surprisingly, graded competition ($h=1$) produces \textit{higher} accuracy (87.5\%) and \textit{higher} $D_{\text{eff}}$ (1.34) than winner-take-most dynamics ($h=4$). Higher Hill coefficients crush the signal magnitude, reducing distinguishability. What matters is competitive normalization (outputs constrained to sum to $\sim$1), not winner-take-most amplification.
+
+This refines the mechanism: codes require (1) substrate competition to normalize outputs, and (2) inter-vesicle coupling for coordination. The specific form of competition (graded vs cooperative) is less important than the existence of competition.
+
+\subsection{Timescale Separation: Structured vs Random}
+
+One natural way to achieve functional orthogonality is through \textit{timescale separation}: reactions with different kinetics could create independent information channels because dynamics at different timescales don't interfere. But does this work in practice?
+
+\textbf{Random timescale separation does not help.} We tested this by randomly slowing 30\% of reactions by 100$\times$ while keeping network topology fixed. Across 20 random chemistries with controlled comparisons (same seed, only rates modified), mixed timescales actually \textit{hurt} performance: accuracy dropped from 72\% to 63\% on average, and D$_{\text{eff}}$ decreased in 80\% of cases. Random rate modification disrupts dynamics without creating useful structure.
+
+This finding constrains the mechanism. Timescale separation is not simply about having ``some fast, some slow'' reactions. The \textit{structure} of separation matters---which reactions are slow, and how they relate to information flow.
+
+\textbf{Structured timescale separation does help.} As we show in Section~\ref{sec:prebiotic}, realistic prebiotic chemistry---where the slow reactions are specifically the \textit{stable product formation} steps (peptides, RNA)---shows the opposite pattern. The natural 5-order-of-magnitude timescale span produces 5$\times$ higher accuracy than uniform timescales. The key is that slow reactions provide \textit{stable scaffolding}, not random bottlenecks.
+
+\textbf{Implications for abiogenesis.} The distinction between structured and random timescale separation has a concrete interpretation: slow reactions must correspond to \textit{heritable} products that provide memory across protocell generations. Random slowing adds lag without adding structure. But if the slow components are specifically those that accumulate and persist (peptides, membranes, eventually nucleic acids), they provide the temporal scaffolding on which faster signaling dynamics can build.
+
+This suggests a hypothesis about RNA/DNA evolution. If RNA served as an early slow scaffold, it may have enabled codes to emerge by providing stable reference points. Once codes exist, our framework predicts selective pressure for even slower scaffolds---slower means more stable, more stable means more heritable. This raises the possibility that DNA evolution, rather than being accidental, may have been driven by the informational advantage of increased stability.
+
+\subsection{Realistic Prebiotic Chemistry}
+\label{sec:prebiotic}
+
+To ground these findings in actual prebiotic conditions, we implemented a second simulation using literature-derived rate constants from formose chemistry, RNA ligation, peptide formation, and vesicle dynamics \cite{breslow1959,walton2024,lambert2008}:
+
+\begin{itemize}
+    \item \textbf{Fast} (formose aldol): $k \sim 10^2$ h$^{-1}$ (seconds)
+    \item \textbf{Intermediate} (vesicle growth): $k \sim 10^{-1}$ h$^{-1}$ (hours)
+    \item \textbf{Slow} (Fe$^{2+}$-catalyzed RNA ligation): $k = 0.037$ h$^{-1}$ (days)
+    \item \textbf{Very slow} (mineral-catalyzed peptide formation): $k \sim 10^{-4}$ h$^{-1}$ (weeks)
+\end{itemize}
+
+This chemistry spans $\sim$5 orders of magnitude in timescales. We tested whether this natural timescale separation enables code emergence, and compared to uniform timescales (all rates set to their geometric mean).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{Unique Codes} & \textbf{Accuracy} & \textbf{$D_{\text{eff}}$} \\
+\midrule
+Mixed timescales & 7/16 & 31\% & 1.01 \\
+Uniform timescales & 2/16 & 6\% & 1.00 \\
+\bottomrule
+\end{tabular}
+\caption{Timescale separation in realistic prebiotic chemistry. Mixed timescales produce 3.5$\times$ more unique codes and 5$\times$ higher accuracy than uniform timescales, even though $D_{\text{eff}}$ remains low in both cases. The chemistry converges to stable products (dipeptides, vesicles), demonstrating the ``asphalt problem''---but timescale separation still helps.}
+\label{tab:prebiotic}
+\end{table}
+
+Two findings emerge. First, even with realistic chemistry, $D_{\text{eff}}$ is low ($\sim$1.0). The chemistry converges to stable products---predominantly dipeptides and vesicles---exactly the ``asphalt problem'' that plagues prebiotic synthesis \cite{benner2012}. Products accumulate but do not create orthogonal information channels.
+
+Second, timescale separation still helps dramatically. Mixed timescales produce 5$\times$ higher decode accuracy than uniform timescales (31\% vs 6\%). The 5-order-of-magnitude span in natural reaction rates is not incidental---it is essential for whatever code-like structure can emerge from this chemistry.
+
+This simulation explains both why abiogenesis experiments fail and what might help. The chemistry converges because products are stable; slow components provide the only orthogonal structure. The formose reaction may approach code-emergence conditions precisely because its autocatalytic loops create fast/slow separation.
+
+\subsection{Formose Reaction: Crossing the Threshold}
+
+To test whether formose chemistry can cross the code-emergence threshold, we implemented a compartmentalized formose reaction simulation with literature-derived kinetics: fast aldol additions ($k \sim 100$), slower retro-aldol regeneration ($k \sim 5$), intermediate isomerizations ($k \sim 1$), and slow degradation ($k \sim 0.1$). The network includes the glycolaldehyde autocatalytic cycle and branching to C2--C6 sugars.
+
+Running 19 coupled compartments across 32 environmental configurations yields $D_{\text{eff}} = 1.09$ with 100\% decode accuracy. \textbf{The threshold is crossed.} Despite the simplified kinetics, formose chemistry achieves sufficient orthogonality through its autocatalytic structure and endogenous timescale separation.
+
+This is a proof of concept: chemistry \textit{can} produce codes. The formose reaction, with its self-organizing temporal dynamics and branching pathways, provides the structure that random chemistry lacks. Whether this specific pathway contributed to the origin of life is a separate historical question; what matters is demonstrating that the transition is physically achievable.
+
+%==============================================================================
+\section{Analysis of Abiogenesis Paradigms}
+\label{sec:analysis}
+%==============================================================================
+
+We now ask: where do major abiogenesis experiments fall on the $D_{\text{eff}}$ spectrum? The key is not counting species but assessing whether those species create \textit{independent information pathways}.
+
+\subsection{Miller-Urey and Spark Discharge}
+
+The original Miller-Urey experiment \cite{miller1953} produces 10--20 amino acids plus various organic acids. However, these are \textit{products}, not interacting dynamics. The reactive system at any moment involves perhaps 5--10 coupled species. Products accumulate but do not form autocatalytic networks with feedback.
+
+Critically, the products do not compete for distinct output channels---they simply accumulate. There is no substrate competition to create normalized, distinguishable outputs.
+
+\textbf{Assessment}: Product diversity is high ($\sim$20--40), but $D_{\text{eff}}$ is low ($\lesssim 5$). Products converge to a common pool rather than diversifying into orthogonal channels.
+
+\subsection{RNA World}
+
+RNA World experiments \cite{joyce2004,lincoln2009} deliberately isolate specific ribozymes:
+\begin{itemize}
+    \item 4 nucleotides
+    \item 1--3 ribozyme species
+    \item Buffer and cofactors
+\end{itemize}
+
+The goal is demonstrating catalytic activity, not emergent coordination. These experiments are optimized for \textit{low} $D_{\text{eff}}$: isolating one reaction to study it.
+
+\textbf{Assessment}: By design, $D_{\text{eff}} \approx 1$--3. The paradigm explicitly minimizes orthogonal pathways to enable mechanistic study.
+
+\subsection{Lipid World}
+
+Lipid vesicle experiments \cite{segre2000,budin2011} study:
+\begin{itemize}
+    \item 2--5 lipid species
+    \item Compositional inheritance
+    \item Vesicle competition
+\end{itemize}
+
+Compositional variation provides some memory, but lipid species typically converge to membrane composition rather than creating orthogonal output channels. Competition is for membrane space, not for distinct information channels.
+
+\textbf{Assessment}: $D_{\text{eff}} \lesssim 5$. Species dynamics converge to membrane composition rather than diversifying.
+
+\subsection{Autocatalytic Sets (Theory)}
+
+Kauffman's autocatalytic sets \cite{kauffman1986} and RAF theory \cite{hordijk2010} predict that random chemistries become self-sustaining above a connectivity threshold. Theoretical models use 50--1000 species. However, high species count does not guarantee high $D_{\text{eff}}$---this depends on network topology.
+
+\textbf{Assessment}: Potentially high $D_{\text{eff}}$ \textit{in theory}, but rarely instantiated experimentally. The gap between theoretical models and laboratory implementations involves both species count and topology.
+
+\subsection{The Formose Reaction}
+
+The formose reaction (formaldehyde $\to$ sugars) is distinctive:
+\begin{itemize}
+    \item Produces 20--50 sugar species
+    \item Has autocatalytic feedback loops
+    \item Creates dynamically interacting networks
+\end{itemize}
+
+This paradigm is interesting because it may have higher $D_{\text{eff}}$ than species count alone would suggest. The autocatalytic structure creates multiple competing pathways, potentially enabling orthogonal dynamics.
+
+\textbf{Assessment}: Species count 20--50, with potential for $D_{\text{eff}} \sim 5$--15 depending on topology. This may be the closest existing experimental paradigm to code-emergence conditions---\textit{if} the autocatalytic structure creates divergent rather than convergent dynamics.
+
+\subsection{Summary}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Paradigm} & \textbf{Species} & \textbf{Dynamics} & \textbf{$D_{\text{eff}}$ Prognosis} \\
+\midrule
+Miller-Urey & 20--40 & Convergent (accumulation) & Low \\
+RNA World & 5--10 & Convergent (by design) & Low \\
+Lipid World & 5--15 & Convergent (compartment formation) & Low \\
+Autocatalytic sets & 50--1000 & Topology-dependent & Variable \\
+Formose reaction & 20--50 & Autocatalytic loops & Potentially higher \\
+\bottomrule
+\end{tabular}
+\caption{Qualitative assessment of major abiogenesis paradigms. Most paradigms exhibit convergent dynamics (products accumulate rather than compete), predicting low $D_{\text{eff}}$ regardless of species count. The formose reaction may have higher $D_{\text{eff}}$ due to autocatalytic structure creating divergent pathways.}
+\label{tab:paradigms}
+\end{table}
+
+Note: These are qualitative assessments, not measured values. Direct measurement of $D_{\text{eff}}$ would require computing participation ratios on experimental time-series data under controlled perturbations---a testable prediction of our framework.
+
+%==============================================================================
+\section{Discussion}
+%==============================================================================
+
+\subsection{Why Abiogenesis Hasn't Produced Codes}
+
+Our analysis suggests a nuanced explanation: \textbf{most abiogenesis experiments have low effective dimensionality, not just low species count}. They demonstrate that prebiotic chemistry can produce building blocks (amino acids, nucleotides, lipids) or perform catalysis (ribozymes). But these experiments were designed for mechanistic clarity, which means minimizing orthogonal pathways---exactly the opposite of what code emergence requires.
+
+Recent theoretical work establishes that high-dimensional systems face fundamental observability limits: neighbors cannot track each other's full internal states, creating pressure for low-dimensional interface codes \cite{todd2026intelligence}. But achieving this requires high internal dimensionality in the first place.
+
+This is not a criticism of the experiments. Demonstrating synthesis and catalysis are legitimate goals. But they are different from demonstrating code emergence, which requires:
+\begin{itemize}
+    \item High effective dimensionality (functionally orthogonal species)
+    \item Substrate competition for normalized outputs (competitive allocation)
+    \item Autocatalytic feedback (for multistability)
+    \item Coupling constraints that enforce consistency across compartments
+\end{itemize}
+
+\subsection{Physical Decoding: The Receiver Colony}
+
+A potential objection is that our ``decodability'' is an artifact of the classifier, not a property of the codes themselves. To address this, we consider a \textbf{receiver colony}: a second vesicle array with the same dynamics but \textit{different random internal wiring}, which receives only the boundary signals from the encoder and must recover the original environmental state.
+
+In extended simulations (reported in companion work), a physics-based receiver---using no machine learning, only matching to canonical response patterns---achieves 100\% classification accuracy across 32 input configurations. The receiver colony is ``blind'' to the environment; it sees only the transmitted signal. If it correctly reconstructs the input, the information must be \textit{in the code}, not in the analysis procedure. Crucially, the receiver has different random internal chemistry than the encoder, proving the code is robust to specific internal wiring---the information is in the interface, not the substrate.
+
+This physical decoder architecture provides a stronger test than leave-one-out classification: it demonstrates that the codes could in principle be read by another dynamical system, not just by an external observer with access to the training set.
+
+\subsection{Experimental Predictions}
+
+Our framework generates testable predictions:
+
+\begin{enumerate}
+    \item \textbf{$D_{\text{eff}}$ predicts code quality}: Measure participation ratio of output codes. Higher $D_{\text{eff}}$ should correlate with more unique codes and higher decode accuracy, regardless of species count.
+
+    \item \textbf{Topology matters more than count}: Two chemistries with identical species count but different network topologies should produce different $D_{\text{eff}}$ and different code quality. Divergent topologies should outperform convergent ones.
+
+    \item \textbf{Formose reaction as test case}: The formose reaction, with 20--50 interacting sugars and autocatalytic feedback, should show partial code emergence \textit{if} its topology creates divergent rather than convergent dynamics. Measure $D_{\text{eff}}$ to test.
+
+    \item \textbf{Discretization test}: Measure output distributions. Bimodal or multimodal distributions indicate code-like dynamics; unimodal distributions indicate insufficient substrate competition or collapsed dimensionality. Specifically: compute Sarle's bimodality coefficient (BC $> 0.555$ indicates bimodality) and the saturation ratio (fraction of samples in ``saturated'' basins, $|x| > 0.5$). Our simulations achieve 89\% saturation (Figure~\ref{fig:bimodality}); a functional code should exceed 80\%.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_bimodality.pdf}
+\caption{\textbf{Evidence for discrete (digital) outputs.} (A) Distribution of output values after substrate competition normalization. Values cluster near 0 and 1 (saturation ratio 89\%), with minimal occupancy in the transition zone. (B) Mean-centered distribution used to define bits (sign of deviation from mean). The bimodal structure (Sarle's BC = 0.76 $>$ 0.555) confirms that discretization emerges from competitive dynamics, not from imposed thresholds. Transition zone occupancy (values within $\pm$0.05 of zero) is 31\%---most outputs are cleanly positive or negative.}
+\label{fig:bimodality}
+\end{figure}
+
+\subsection{Implications for Origins Research}
+
+If our analysis is correct, the field may need to shift strategy:
+
+\begin{quote}
+\textit{From}: Isolate minimal systems that demonstrate specific functions\\
+\textit{To}: Design topologies that create orthogonal information channels
+\end{quote}
+
+\textbf{Engineering as proof of concept.} A common objection to naturalistic origins is that the transition from chemistry to codes is ``too improbable.'' Our framework suggests a response: if we can \textit{engineer} a chemical system that crosses the code-emergence threshold, we demonstrate that chemistry \textit{can} produce codes---even if we cannot prove this is how life historically originated. The Wright brothers did not prove birds evolved flight; they proved heavier-than-air flight is possible. Similarly, demonstrating code emergence in an engineered chemical system (e.g., formose chemistry in a compartmentalized flow reactor) would transform the question from ``can chemistry produce codes?'' to ``which of many possible pathways did Earth take?'' The miracle dissolves into an engineering problem.
+
+The key insight is not ``add more species'' but ``create functionally orthogonal pathways.'' A carefully designed 20-species network with divergent topology could outperform a random 100-species network with convergent dynamics. The genetic code did not emerge from species count alone---it emerged from a high-dimensional chemical ecology where different reaction pathways created independent information channels.
+
+\subsection{Limitations}
+
+Several limitations constrain interpretation:
+
+\textbf{Simulation, not experiment}: We provide computational proof-of-concept. The $D_{\text{eff}}$ measurements from our simulations (1.0--1.3) are low even for the ``successful'' case, suggesting our model may not yet capture the full range of possible topologies.
+
+\textbf{Random networks}: Our reaction networks are randomly generated. Real prebiotic chemistry may have systematic topological properties (e.g., thermodynamic constraints on reaction networks) that affect $D_{\text{eff}}$ differently.
+
+\textbf{Phenomenological dynamics}: Our model uses generic reaction networks, not specific prebiotic chemistry. The substrate competition mechanism (Eq.~\ref{eq:hill}) is plausible but not demonstrated in protocell systems.
+
+\textbf{Untested prediction}: The core prediction---that $D_{\text{eff}}$ predicts code quality better than species count---has not been tested on real chemical systems. This requires measuring participation ratios on experimental time-series data.
+
+\textbf{What would falsify this framework?} Two experimental outcomes would refute our claims: (1) A system with high estimated $D_{\text{eff}}$ ($> 2$) that nevertheless fails to produce stable attractor clustering or decodable codes; or (2) A system with low $D_{\text{eff}}$ ($\approx 1$) that nonetheless achieves robust code emergence. Either outcome would indicate that effective dimensionality is not the key predictor we claim it to be.
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+We propose that code emergence requires sufficient \textit{effective} dimensionality ($D_{\text{eff}}$)---not merely many chemical species, but species whose dynamics span orthogonal information channels. The mechanism is substrate competition: competitive binding normalizes outputs and creates distinguishable patterns from continuous chemistry. Ablations show that graded competition ($h=1$) works as well or better than cooperative binding ($h>1$)---what matters is competitive allocation, not winner-take-most amplification. Crucially, our simulations show that \textit{more species can mean lower dimensionality}: 50 species converging to 8 outputs ($D_{\text{eff}} = 1.0$, 57\% accuracy) perform worse than 15 species with more orthogonal pathways ($D_{\text{eff}} = 1.3$, 83\% accuracy).
+
+This reframes the abiogenesis puzzle. The question is not ``why haven't experiments with many species produced codes?'' but ``why don't experimental chemistries create functionally orthogonal pathways?'' Most paradigms are designed for mechanistic clarity, which means \textit{minimizing} orthogonal dynamics---exactly the opposite of what code emergence requires.
+
+The path forward is not simply ``messier chemistry'' but \textit{structured mess}: reaction networks where different species groups connect to different output channels, creating multiple independent pathways for information encoding. The formose reaction, with its autocatalytic structure and multiple sugar species, may approach this regime---but only if its topology creates divergent rather than convergent dynamics.
+
+We have not been looking in systems too simple. We have been looking in systems too \textit{convergent}.
+
+%==============================================================================
+\section*{Data Availability}
+%==============================================================================
+
+All simulation code and data are available at: \url{https://github.com/todd866/protocell-codes}
+
+%==============================================================================
+\section*{Acknowledgments}
+%==============================================================================
+
+The author thanks the University of Sydney for institutional support.
+
+\bibliographystyle{apalike}
+\begin{thebibliography}{99}
+
+\bibitem{powner2009synthesis}
+Powner, M.W., Gerland, B., Sutherland, J.D. (2009). Synthesis of activated pyrimidine ribonucleotides in prebiotically plausible conditions. \textit{Nature}, 459, 239--242.
+
+\bibitem{sutherland2016origin}
+Sutherland, J.D. (2016). The origin of life---out of the blue. \textit{Angewandte Chemie Int. Ed.}, 55, 104--121.
+
+\bibitem{szostak2001synthesizing}
+Szostak, J.W., Bartel, D.P., Luisi, P.L. (2001). Synthesizing life. \textit{Nature}, 409, 387--390.
+
+\bibitem{chen2004emergence}
+Chen, I.A., Roberts, R.W., Szostak, J.W. (2004). The emergence of competition between model protocells. \textit{Science}, 305, 1474--1476.
+
+\bibitem{miller1953}
+Miller, S.L. (1953). A production of amino acids under possible primitive earth conditions. \textit{Science}, 117, 528--529.
+
+\bibitem{joyce2004}
+Joyce, G.F. (2004). Directed evolution of nucleic acid enzymes. \textit{Annu. Rev. Biochem.}, 73, 791--836.
+
+\bibitem{lincoln2009}
+Lincoln, T.A., Joyce, G.F. (2009). Self-sustained replication of an RNA enzyme. \textit{Science}, 323, 1229--1232.
+
+\bibitem{segre2000}
+Segr\'{e}, D., Ben-Eli, D., Lancet, D. (2000). Compositional genomes: prebiotic information transfer in mutually catalytic noncovalent assemblies. \textit{PNAS}, 97, 4112--4117.
+
+\bibitem{budin2011}
+Budin, I., Szostak, J.W. (2011). Expanding roles for diverse physical phenomena during the origin of life. \textit{Annu. Rev. Biophys.}, 40, 267--288.
+
+\bibitem{kauffman1986}
+Kauffman, S.A. (1986). Autocatalytic sets of proteins. \textit{J. Theor. Biol.}, 119, 1--24.
+
+\bibitem{hordijk2010}
+Hordijk, W., Steel, M. (2010). Autocatalytic sets and the origin of life. \textit{Entropy}, 12, 1733--1742.
+
+\bibitem{todd2026intelligence}
+Todd, I. (2026). Intelligence as high-dimensional coherence: The observable dimensionality bound and computational tractability. \textit{BioSystems}, in press. Preprint: \url{https://github.com/todd866/intelligence-biosystems}
+
+\bibitem{breslow1959}
+Breslow, R. (1959). On the mechanism of the formose reaction. \textit{Tetrahedron Letters}, 1(21), 22--26.
+
+\bibitem{walton2024}
+Walton, C.R., et al. (2024). Prebiotic synthesis in a reducing atmosphere and the emergence of life. \textit{Nature}, 626, 282--289.
+
+\bibitem{lambert2008}
+Lambert, J.F. (2008). Adsorption and polymerization of amino acids on mineral surfaces: A review. \textit{Origins of Life and Evolution of Biospheres}, 38, 211--242.
+
+\bibitem{benner2012}
+Benner, S.A., Kim, H.J., Carrigan, M.A. (2012). Asphalt, water, and the prebiotic synthesis of ribose, ribonucleosides, and RNA. \textit{Accounts of Chemical Research}, 45, 2025--2034.
+
+\bibitem{cornish1995}
+Cornish-Bowden, A. (1995). \textit{Fundamentals of Enzyme Kinetics}. Portland Press.
+
+\end{thebibliography}
+
+\end{document}

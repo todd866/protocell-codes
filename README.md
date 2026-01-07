@@ -1,93 +1,66 @@
-# HeroX Evolution 2.0 Prize Submission
+# Why Abiogenesis Experiments Produce Building Blocks But Not Codes: An Effective Dimensionality Threshold
 
-**Core Insight**: Codes emerge as coordination interfaces between coupled protocellular compartments. Communication precedes information storage. The genetic code is the compression of meaning that first existed in distributed coupling fields.
+**Core finding: Code emergence requires sufficient effective dimensionality (D_eff), not just many species. 50 species converging to 8 outputs → D_eff = 1.0, 57% accuracy. 15 species with orthogonal pathways → D_eff = 1.3, 83% accuracy.**
 
-## Folder Structure
+## Key Results
 
-```
-60_heroX_evolution/
-├── prize/                    # HeroX prize submission (~5 pages)
-│   ├── prize_submission.tex
-│   └── prize_submission.pdf
-├── biosystems/               # BioSystems paper (~15 pages)
-│   ├── biosystems_submission.tex
-│   └── biosystems_submission.pdf
-├── ig/                       # Information Geometry companion (~9 pages)
-│   ├── constraint_exchange.tex
-│   └── constraint_exchange.pdf
-├── patent/                   # Australian provisional (25 claims)
-│   ├── australian_provisional.tex
-│   └── australian_provisional.pdf
-├── simulation/               # Python code
-│   ├── simulate.py           # Main simulation
-│   ├── overnight_run.py      # Batch runner
-│   └── results.npy           # Saved metrics
-├── figures/
-├── articles/
-└── archive/
+- **Species count ≠ effective dimensionality**: More species can mean *lower* D_eff
+- **D_eff predicts code quality**: Participation ratio of output codes is the key variable
+- **Timescale separation is essential**: Mixed timescales → 5× higher accuracy than uniform
+- **Realistic chemistry converges**: The "asphalt problem" - products accumulate but don't create orthogonal channels
+- **Formose reaction** may be viable if its autocatalytic loops create timescale separation
+
+## Simulations
+
+### Abstract chemistry (`chemistry_sim.py`)
+Tests the D_eff hypothesis with random reaction networks:
+```bash
+python chemistry_sim.py --compare    # 15 vs 50 species comparison
+python chemistry_sim.py --timescale  # Test timescale separation
+python chemistry_sim.py --full       # Full 32-environment test
 ```
 
-## Key Results (61 Vesicles, 128D)
-
-| Metric | Value |
-|--------|-------|
-| Unique mappings | 32/32 (no collisions) |
-| Reproducibility | 100% |
-| Separation ratio | 335,361× |
-| Env-Attractor correlation | 0.72 |
-| Decoder accuracy | 100% (physics-only) |
-
-## The Mechanism
-
-**Substrate competition** (lateral inhibition) discretizes continuous dynamics:
-- Output channels compete for finite metabolic resources
-- Hill kinetics + Michaelis-Menten saturation
-- The allocation formula is QSSA for competitive binding
-- 89% of outputs saturated → emergent digitality
-
-## Building
+### Realistic prebiotic chemistry (`prebiotic_chemistry.py`)
+Uses literature-derived rate constants spanning 5 orders of magnitude:
+- **Fast** (formose aldol): k ~ 10² h⁻¹ (seconds)
+- **Intermediate** (vesicle): k ~ 10⁻¹ h⁻¹ (hours)
+- **Slow** (RNA ligation): k = 0.037 h⁻¹ (days)
+- **Very slow** (peptide): k ~ 10⁻⁴ h⁻¹ (weeks)
 
 ```bash
-# Prize submission
-cd prize && pdflatex prize_submission.tex
-
-# BioSystems paper
-cd biosystems && pdflatex biosystems_submission.tex
-
-# Patent
-cd patent && pdflatex australian_provisional.tex
-
-# Simulations
-python3 simulation/simulate.py          # Single run
-python3 simulation/simulate.py --sweep  # 20-seed test
-nohup python3 simulation/overnight_run.py &  # Background batch
+python prebiotic_chemistry.py --quick    # 8-environment quick test
+python prebiotic_chemistry.py --full     # 32-environment full test
+python prebiotic_chemistry.py --ablation # Mixed vs uniform timescales
 ```
 
-## Submission Priority
+**Key finding**: Mixed timescales produce 5× higher accuracy than uniform timescales (31% vs 6%), even though both converge to stable products.
 
-1. **Patent** → IP Australia (~$130 AUD) - establishes priority date
-2. **Prize** → HeroX (can be submitted anytime after patent)
-3. **Discover Life** (formerly Origins of Life) → Full theoretical treatment
+## Files
 
-## Status (Jan 2026)
+- `main.tex` / `main.pdf` - Paper (14 pages)
+- `cover_letter.tex` / `cover_letter.pdf` - Cover letter
+- `chemistry_sim.py` - Abstract mass-action ODE simulation
+- `prebiotic_chemistry.py` - Realistic prebiotic chemistry simulation
+- `generate_figure.py` - Generate figures from saved results
+- `figures/fig_confusion_matrix.pdf` - Species comparison figure
+- `figures/fig_timescale.pdf` - Timescale separation figure
 
-- [x] Main paper complete (`paper/main.tex`)
-- [x] Cover letter complete
-- [x] All simulations reproducible
-- [x] Prize submission ready
-- [ ] Submit to Discover Life
+## The Key Insight
 
-## License
+Raw species count does not predict code quality. What matters is **effective dimensionality**: how many orthogonal directions the output codes actually span.
 
-MIT License
+D_eff is measured as participation ratio:
+```
+D_eff = (Σλ)² / Σ(λ²)
+```
+where λ are eigenvalues of the output covariance matrix.
 
----
+**Timescale separation helps** because slow reactions provide a scaffold on which fast dynamics can create orthogonal structure. This mirrors the brain's oscillatory hierarchy.
 
-## See Also
+## Status
 
-**This project is part of the Evo2.0 cluster. See:**
-- `../../CLUSTER_STATUS_EVO2.md` — Cluster status tracking (HeroX + Araudia + Social Intel)
-- `../../PROJECT_INDEX.md` — Full research program inventory
-- `../../CLAUDE.md` — Workflow documentation and journal strategy
-- `../62_araudia_integration/` — Araudia integration (stochastic validation, winner margins)
-- `../../biosystems/61_social_intelligence/` — Social Intelligence paper (why codes require coordination)
+**In development.** Target: Discover Life (Springer) or BioSystems.
+
+## Related
+
+- `63_evox_expanded/` - Full version with Lewis games, basin structure, predator-prey
