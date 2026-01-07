@@ -29,7 +29,7 @@ Sydney, NSW, Australia\\
 \begin{abstract}
 %==============================================================================
 %%% EXPANDED: Updated abstract with Lewis games and basin analysis %%%
-We address two fundamental questions in abiogenesis: (1) how did symbolic codes arise from continuous chemistry, and (2) why didn't early life homogenize into synchronous goo? We propose that both answers follow from coherence constraints. First, codes emerge as coordination interfaces between coupled protocellular compartments---stable patterns that allow neighbors to influence each other without full state knowledge. Substrate competition (lateral inhibition) drives winner-take-most dynamics that make continuous outputs reliably distinguishable. We validate this mechanism through two independent approaches: direct simulation of coupled compartments (98\% decoding accuracy) and Lewis signaling games where codes emerge from coordination pressure alone without external supervision. Second, coherence is metabolically expensive and scales superlinearly with group size, creating an inherent ceiling on coordination that generates predator-prey dynamics without specialized machinery. We connect our results to genetic code structure through basin analysis (degeneracy correlates with robustness, $r = 0.80 \pm 0.08$, $n = 20$) and p-adic number theory, validating Khrennikov's formalism while identifying what our model cannot explain (the concentration of degeneracy at the wobble position). We propose that ecological dynamics may predate biological complexity, arising from physics before genetic encoding.
+We address two fundamental questions in abiogenesis: (1) how did symbolic codes arise from continuous chemistry, and (2) why didn't early life homogenize into synchronous goo? We propose that both answers follow from coherence constraints. First, codes emerge as coordination interfaces between coupled protocellular compartments---stable patterns that allow neighbors to influence each other without full state knowledge. Substrate competition (lateral inhibition) drives winner-take-most dynamics that make continuous outputs reliably distinguishable. We validate this mechanism through two independent approaches: direct simulation of coupled compartments (98\% decoding accuracy) and Lewis signaling games where codes emerge from coordination pressure alone without external supervision. Second, coherence is metabolically expensive and scales superlinearly with group size, creating an inherent ceiling on coordination that generates predator-prey dynamics without specialized machinery. We connect our results to genetic code structure through basin analysis (degeneracy correlates with robustness, $r = 0.80 \pm 0.08$, $n = 20$) and p-adic number theory, finding results consistent with Khrennikov's formalism while identifying what our model cannot explain (the concentration of degeneracy at the wobble position). We propose that ecological dynamics may predate biological complexity, arising from physics before genetic encoding.
 \end{abstract}
 
 \medskip
@@ -162,6 +162,20 @@ Each vesicle experiences spatially varying stimulus (center-edge gradients, top-
 
 The complexity is not in the stimulus; it is in the system's ability to differentiate continuous gradients into discrete coordination states. We deliberately use simple inputs to demonstrate that code structure emerges from the network dynamics, not from input complexity.
 
+\medskip
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule}{%
+\textbf{Simulation Protocol (Reproducibility Checklist)}\\[0.3em]
+\begin{tabular}{@{}ll@{}}
+Timesteps per cycle: & 50 (200 total for 4 cycles) \\
+Washout: & 20 timesteps before recording \\
+Input construction: & 5-bit binary $\to$ spatial gradients (see code) \\
+Boundary signal: & Mean of neighbor outputs: $\mathbf{b}_i = \frac{1}{|N_i|}\sum_{j \in N_i} \boldsymbol{\phi}_j$ \\
+Readout: & Linear projection $W_{\text{out}} \mathbf{x}$, then ReLU, then competition \\
+Seeds: & 20 random seeds; statistics are mean $\pm$ std \\
+Code: & \texttt{github.com/todd866/protocell-codes}
+\end{tabular}}}
+\medskip
+
 Figure~\ref{fig:architecture} illustrates the system architecture, showing the hexagonal vesicle array (A), the substrate competition mechanism (B), and the resulting environment-to-code mapping (C).
 
 \begin{figure}[H]
@@ -207,6 +221,8 @@ The system reliably maps 32 environmental configurations to 32 distinguishable c
 
 Both receivers share coupling topology, Hill kinetics parameters, and readout architecture. Both are initialized with independent random states. Decoding is performed by nearest-attractor matching: the receiver's output is compared to canonical attractors from the encoder, assigned to the closest match in Euclidean distance. No gradient descent or parameter optimization is involved.
 
+\textbf{How does the receiver obtain attractors?} In simulations, we provide canonical attractors as an oracle to measure separability---this is an upper bound on performance. Biologically, receivers could estimate attractors through repeated exposure: if the same code pattern recurs under consistent environmental conditions, statistical learning converges to attractor centroids. This is analogous to how animals learn conspecific calls without explicit instruction. We do not model the learning process; we test whether the codes \textit{are} learnable given sufficient exposure.
+
 The 87\% accuracy of same-statistics receivers demonstrates that the code structure is partially \textit{chemistry-general}: it arises from the dynamical regime (competition + coupling), not from specific weight values. The 11\% accuracy gap to matched-realization suggests that some fine structure is individual-specific---consistent with the biological observation that conspecifics share communication systems imperfectly.
 
 \subsection{Ablation Controls}
@@ -214,16 +230,16 @@ The 87\% accuracy of same-statistics receivers demonstrates that the code struct
 To demonstrate that code emergence requires the proposed mechanisms, we tested ablated configurations:
 
 \begin{center}
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-\textbf{Condition} & \textbf{Unique Codes} & \textbf{Reproducibility} & \textbf{Sep$_{\text{attractor}}$} \\
+\textbf{Condition} & \textbf{Unique Codes} & \textbf{Reproducibility} & \textbf{Sep$_{\text{attractor}}$} & \textbf{Sep$_{\text{interface}}$} \\
 \midrule
-Full model & 32/32 & 98.4\% & 335,000$\times$ \\
-No coupling ($\kappa = 0$) & 32/32 & 97.1\% & 68$\times$ \\
-No competition ($h = 1$) & 8/32 & 62.3\% & 2.1$\times$ \\
-Noisy input ($\pm 20\%$) & 32/32 & 94.8\% & 198,000$\times$ \\
-No temporal cycles & 12/32 & 71.2\% & 14$\times$ \\
-Random topology & 32/32 & 89.4\% & 12,400$\times$ \\
+Full model & 32/32 & 98.4\% & 335,000$\times$ & 343$\times$ \\
+No coupling ($\kappa = 0$) & 32/32 & 97.1\% & 68$\times$ & 68$\times$ \\
+No competition ($h = 1$) & 8/32 & 62.3\% & 2.1$\times$ & 1.8$\times$ \\
+Noisy input ($\pm 20\%$) & 32/32 & 94.8\% & 198,000$\times$ & 287$\times$ \\
+No temporal cycles & 12/32 & 71.2\% & 14$\times$ & 12$\times$ \\
+Random topology & 32/32 & 89.4\% & 12,400$\times$ & 156$\times$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -462,7 +478,7 @@ The closest 32 codon pairs (p-adic distance $1/32$):
     \item \textbf{94\%} code for the same amino acid
 \end{itemize}
 
-This validates Khrennikov's formalism: the 2-adic metric is not arbitrary---it captures the biologically meaningful structure of the genetic code. Synonymous codons are p-adically close; different amino acids are p-adically distant.
+This is consistent with Khrennikov's formalism: the 2-adic metric captures biologically meaningful structure in the genetic code. Synonymous codons are p-adically close; different amino acids are p-adically distant. We do not claim the genetic code was \textit{generated} by p-adic dynamics---only that the 2-adic metric aligns with functional organization better than naive alternatives.
 
 \textbf{Baseline comparison:} To verify that the 2-adic encoding is not cherry-picked, we compared it to Hamming distance (1-nucleotide differences). For 1-Hamming pairs: 76/192 (40\%) code for the same amino acid. For p-adic closest pairs ($d = 1/32$): 30/32 (94\%) code for the same amino acid. The 2-adic metric outperforms naive Hamming distance because it preferentially identifies wobble-position changes, which are biologically synonymous. Random nucleotide encodings (10 permutations tested) yield 35--55\% same-amino-acid rates for their ``closest'' pairs, confirming that the Khrennikov encoding is structurally meaningful.
 
@@ -583,20 +599,20 @@ Figure~\ref{fig:ecology} shows the emergent ecology. Panel A displays the strate
 
 \subsection{Critical Finding: Derived Coordination Ceiling}
 
-Soft cost penalties are insufficient for size differentiation. We tested whether continuous cost functions (Eq.~5) alone could generate ecological structure. They cannot. The cost exponent $\gamma$ creates pressure toward smaller sizes at high coherence, but without a ceiling, coherent groups simply become arbitrarily small rather than forming a distinct attractor.
+Soft cost penalties are insufficient for size differentiation. We tested whether continuous cost functions (Eq.~6) alone could generate ecological structure. They cannot. The cost exponent $\gamma$ creates pressure toward smaller sizes at high coherence, but without a ceiling, coherent groups simply become arbitrarily small rather than forming a distinct attractor.
 
 Rather than impose an ad hoc ceiling, we \textbf{derive} it from signal propagation constraints. Coherent oscillation requires every element to influence every other on timescales faster than the oscillation period $T_{\text{osc}}$. For diffusive signaling, propagation time scales with the \textit{square} of group diameter:
 \begin{equation}
-\tau_{\text{prop}}(N) = \frac{L^2}{D} \approx \frac{N}{\rho \, D}
+\tau_{\text{prop}}(N) = \frac{L^2}{\mathcal{D}} \approx \frac{N}{\rho \, \mathcal{D}}
 \end{equation}
-where $D$ is the diffusion coefficient, $\rho$ is packing density, and $L = \sqrt{N/\rho}$ is the characteristic diameter. Coherence is viable when $\tau_{\text{prop}} < \alpha T_{\text{osc}}$ for some threshold $\alpha < 1$.
+where $\mathcal{D}$ is the diffusion coefficient (distinguished from dimensionality $D$), $\rho$ is packing density, and $L = \sqrt{N/\rho}$ is the characteristic diameter. Coherence is viable when $\tau_{\text{prop}} < \alpha T_{\text{osc}}$ for some threshold $\alpha < 1$.
 
 This yields a \textbf{derived ceiling}:
 \begin{equation}
-N^* = \alpha \, \rho \, D \, T_{\text{osc}}
+N^* = \alpha \, \rho \, \mathcal{D} \, T_{\text{osc}}
 \end{equation}
 
-For plausible prebiotic parameters ($D \sim 10$ $\mu$m$^2$/s for small signaling molecules, $T_{\text{osc}} \sim 100$ s chemical oscillation, $\rho \sim 0.1$ cells/$\mu$m$^2$, $\alpha = 0.5$), this yields $N^* \approx 50$, consistent with our simulation range.
+For plausible prebiotic parameters ($\mathcal{D} \sim 10$ $\mu$m$^2$/s for small signaling molecules, $T_{\text{osc}} \sim 100$ s chemical oscillation, $\rho \sim 0.1$ cells/$\mu$m$^2$, $\alpha = 0.5$), this yields $N^* \approx 50$, consistent with our simulation range.
 
 Predators sit exactly at the ceiling ($N \approx 39$ when ceiling $= 40$). This is not fine-tuning; evolution pushes coherent groups to the maximum viable size, which is precisely the ceiling.
 
@@ -616,6 +632,8 @@ $N_{\text{ceiling}}$ & $C_{\text{threshold}}$ & Pred.\ $N$ & Prey $N$ & Pred.\ f
 \end{center}
 
 In all cases, predators cluster near the ceiling while prey remain large.
+
+\textbf{What is imposed vs.\ derived:} In simulations, we implement the ceiling as a hard constraint ($N \leq N_{\text{ceiling}}$); colonies attempting to grow beyond it are truncated. The derivation (Eq.~9--10) provides the \textit{physical rationale} for why such a ceiling exists and predicts its magnitude from diffusion physics. We do not simulate diffusion-limited propagation directly; we impose the ceiling and show that (1) evolution pushes coherent groups exactly to it, and (2) the derived magnitude matches plausible prebiotic parameters. A full test would couple the ecological simulation to explicit signal propagation dynamics.
 
 \subsection{Why Homogenization Fails}
 
@@ -731,7 +749,7 @@ If codes emerge from this chemical mess---and our theory says they should---that
 \begin{itemize}[nosep,leftmargin=*]
     \item Removing substrate competition ($h = 1$) should collapse code capacity $\to$ \textit{confirmed} (Table, Section 4)
     \item Removing temporal cycles should reduce code diversity $\to$ \textit{confirmed} (separation ratio $>300\times$ $\to$ $<50\times$)
-    \item Code separation should peak at intermediate coupling $\to$ \textit{confirmed} (Figure 3C)
+    \item Code separation should peak at intermediate coupling $\to$ \textit{confirmed} (Figure 2C)
     \item Predator size should track $N_{\text{ceiling}}$ across parameter sweeps $\to$ \textit{confirmed} (Table, Section 8)
     \item Lewis games should produce equivalent codes without substrate competition $\to$ \textit{confirmed} (Section 5)
     \item \textbf{Open prediction}: Coupled vesicle arrays with oscillatory chemistry should spontaneously develop reproducible discrete boundary states

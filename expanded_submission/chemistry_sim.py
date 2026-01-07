@@ -445,17 +445,172 @@ def run_quick_test():
 def run_full_test():
     """Full test with all 32 environments."""
     print("Running full test (32 environments)...\n")
-    print("Estimated time: 30-60 minutes on laptop\n")
     return run_code_emergence_experiment(n_envs=32, n_trials=3, n_rings=2, seed=42)
+
+
+def run_big_test():
+    """
+    Bigger test: more species, more vesicles, more reactions.
+    Tests the "messier is better" prediction.
+    """
+    print("Running BIG test (61 vesicles, 50 species, 100 reactions)...\n")
+    return run_code_emergence_experiment(
+        n_envs=32,
+        n_trials=5,
+        n_rings=4,  # 61 vesicles (same as paper)
+        seed=42
+    )
+
+
+def run_messy_test():
+    """
+    "Messy chemistry" test: high species count, many reactions.
+    Should produce SHARPER codes per the theory.
+    """
+    print("Running MESSY test (high-dimensional chemistry)...\n")
+    print("Theory predicts: more species → better discretization\n")
+
+    # Custom parameters for messy chemistry
+    class MessyChemistryArray(ChemicalVesicleArray):
+        def __init__(self, n_rings=3, seed=42):
+            self.coords = hexagonal_grid(n_rings)
+            self.n_vesicles = len(self.coords)
+            self.neighbors = get_neighbors(self.coords)
+            self.coupling_strength = 0.15  # Slightly stronger coupling
+
+            n_species = 50  # Much more species
+            n_reactions = 150  # Many more reactions
+            self.n_species = n_species
+
+            np.random.seed(seed)
+            self.networks = []
+            base_network = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
+
+            for i in range(self.n_vesicles):
+                net = AutocatalyticNetwork(n_species, n_reactions, seed=seed)
+                net.rates = [r * np.random.uniform(0.85, 1.15) for r in base_network.rates]
+                net.reactants = base_network.reactants.copy()
+                net.products = base_network.products.copy()
+                self.networks.append(net)
+
+            # More output channels
+            self.output_species = list(range(n_species - 15, n_species))
+            self.n_outputs = len(self.output_species)
+
+    # Run with messy chemistry
+    print("=" * 70)
+    print("MESSY CHEMISTRY - CODE EMERGENCE TEST")
+    print("=" * 70)
+    print(f"\n50 species, 150 reactions per vesicle")
+    print(f"15 output channels (vs 8 in standard)")
+    print(f"37 vesicles (3-ring hexagonal array)\n")
+
+    all_codes = []
+    n_envs = 32
+    n_trials = 3
+
+    start_time = time.time()
+
+    for env_id in range(n_envs):
+        print(f"Environment {env_id+1}/{n_envs}...", end=" ", flush=True)
+        env_start = time.time()
+
+        trial_codes = []
+        for trial in range(n_trials):
+            array = MessyChemistryArray(n_rings=3, seed=42 + env_id * 100 + trial)
+            env_inputs = create_spatial_gradient(array.coords, env_id)
+
+            # Pad env_inputs if needed
+            if env_inputs.shape[1] < 5:
+                env_inputs = np.pad(env_inputs, ((0,0), (0, 5 - env_inputs.shape[1])))
+
+            code, _ = array.run(env_inputs, t_span=(0, 80), n_points=300)
+            trial_codes.append(code)
+
+        mean_code = np.mean(trial_codes, axis=0)
+        all_codes.append(mean_code)
+
+        env_time = time.time() - env_start
+        print(f"({env_time:.1f}s)")
+
+    total_time = time.time() - start_time
+    print(f"\nTotal time: {total_time/60:.1f} minutes")
+
+    # Analyze
+    all_codes = np.array(all_codes)
+
+    print("\n" + "=" * 70)
+    print("MESSY CHEMISTRY RESULTS")
+    print("=" * 70)
+
+    from scipy.spatial.distance import pdist, squareform
+    code_dists = squareform(pdist(all_codes))
+    np.fill_diagonal(code_dists, np.inf)
+
+    nearest_neighbor = np.argmin(code_dists, axis=1)
+    unique_nn = len(set(range(n_envs)) - set(nearest_neighbor[np.arange(n_envs) != nearest_neighbor]))
+
+    # Count actual unique codes (no collisions)
+    collisions = 0
+    for i in range(n_envs):
+        for j in range(i+1, n_envs):
+            if code_dists[i, j] < 0.01:
+                collisions += 1
+
+    unique_codes = n_envs - collisions
+
+    mean_between = np.mean([code_dists[i,j] for i in range(n_envs) for j in range(i+1, n_envs)])
+    min_between = np.min([code_dists[i,j] for i in range(n_envs) for j in range(i+1, n_envs) if code_dists[i,j] > 0])
+
+    from scipy.stats import entropy
+    code_flat = all_codes.flatten()
+    hist, _ = np.histogram(code_flat, bins=20, density=True)
+    code_entropy = entropy(hist + 1e-10)
+    uniform_entropy = np.log(20)
+    discretization = 1 - code_entropy / uniform_entropy
+
+    winner_fractions = np.max(all_codes, axis=1)
+    mean_winner = np.mean(winner_fractions)
+
+    print(f"\n1. CODE UNIQUENESS")
+    print(f"   Unique codes: {unique_codes}/32")
+    print(f"   Collisions: {collisions}")
+
+    print(f"\n2. CODE SEPARATION")
+    print(f"   Mean between-class distance: {mean_between:.4f}")
+    print(f"   Min between-class distance: {min_between:.4f}")
+
+    print(f"\n3. DISCRETIZATION")
+    print(f"   Score: {discretization:.2f} (1.0 = fully discrete)")
+
+    print(f"\n4. WINNER-TAKE-MOST")
+    print(f"   Mean winner fraction: {mean_winner:.2f} (random = {1/15:.3f})")
+
+    print("\n" + "=" * 70)
+    if discretization > 0.5 and mean_winner > 0.2:
+        print("✓ MESSY CHEMISTRY PRODUCES CODES")
+        print(f"  Discretization {discretization:.0%} with {unique_codes}/32 unique codes")
+    print("=" * 70)
+
+    return all_codes
 
 
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) > 1 and sys.argv[1] == "--full":
-        codes, labels = run_full_test()
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--full":
+            codes, labels = run_full_test()
+        elif sys.argv[1] == "--messy":
+            codes = run_messy_test()
+        elif sys.argv[1] == "--big":
+            codes, labels = run_big_test()
+        else:
+            print("Unknown option:", sys.argv[1])
     else:
-        print("Usage: python chemistry_sim.py [--full]")
-        print("  Default: quick test (8 envs, ~5 min)")
-        print("  --full: full test (32 envs, ~30-60 min)\n")
+        print("Usage: python chemistry_sim.py [--full|--messy|--big]")
+        print("  Default: quick test (8 envs, 7 vesicles)")
+        print("  --full:  full test (32 envs, 19 vesicles)")
+        print("  --messy: messy chemistry (50 species, 150 reactions)")
+        print("  --big:   big array (61 vesicles)\n")
         codes, labels = run_quick_test()
