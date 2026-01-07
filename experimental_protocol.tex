@@ -1,0 +1,249 @@
+%==============================================================================
+% EXPERIMENTAL PROTOCOL: Testing Code Emergence in Formose Chemistry
+%==============================================================================
+% This section provides a complete experimental design for validating
+% the dimensionality threshold prediction in physical chemistry.
+%==============================================================================
+
+\subsection{Experimental Validation Protocol}
+\label{sec:experimental}
+
+The simulation predicts that formose chemistry, when compartmentalized and coupled, can cross the code-emergence threshold ($D_{\text{eff}} > 1$). We propose an experimental test using microfluidic reactor arrays with the following design.
+
+\subsubsection{Core Prediction}
+
+\textbf{Hypothesis}: Coupled compartments running formose chemistry under spatially varying conditions will produce distinguishable, reproducible output patterns (codes). Specifically:
+\begin{itemize}
+    \item Formose + coupling + environmental gradient: $D_{\text{eff}} > 1$, decode accuracy $> 50\%$
+    \item Formose without coupling: $D_{\text{eff}} \approx 1$, accuracy $\approx$ chance
+    \item Uniform environment (no gradient): $D_{\text{eff}} \approx 1$ (single code)
+    \item Non-autocatalytic control: $D_{\text{eff}} \approx 1$, accuracy $\approx$ chance
+\end{itemize}
+
+The signature of code emergence is that \textit{environmental variation produces distinguishable, reproducible output patterns} only when (1) chemistry has autocatalytic/branching structure, (2) compartments are coupled, and (3) environments differ.
+
+\subsubsection{Apparatus: Microfluidic Reactor Array}
+
+\textbf{Chip design}: A PDMS microfluidic chip containing 19 hexagonally-arranged chambers (matching the simulation geometry), each $\sim$500 $\mu$L volume, connected by narrow diffusion channels (50 $\mu$m width, 1 mm length).
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Specification} \\
+\midrule
+Chamber count & 19 (hexagonal array) \\
+Chamber volume & 500 $\mu$L each \\
+Channel dimensions & 50 $\mu$m $\times$ 50 $\mu$m $\times$ 1 mm \\
+Diffusion time & $\sim$10 min (sets coupling timescale) \\
+Total volume & $\sim$10 mL \\
+Material & PDMS on glass \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Coupling control}: Channel width determines coupling strength $\kappa$. The simulation uses $\kappa = 0.1$ (10\% exchange per reaction timescale). For formose kinetics ($\tau \sim 1$ min for fast reactions), this corresponds to diffusion equilibration over $\sim$10 min, achieved with 50 $\mu$m channels. Fabricate chips with 25, 50, and 100 $\mu$m channels to test coupling dependence.
+
+\textbf{Environmental gradient}: Two orthogonal gradients across the array:
+\begin{enumerate}
+    \item \textbf{Temperature}: Peltier elements on opposite edges, creating 25--40$^\circ$C gradient
+    \item \textbf{Feedstock}: Microfluidic injection ports with programmable syringe pumps, creating formaldehyde concentration gradient (10--100 mM)
+\end{enumerate}
+
+\subsubsection{Chemistry}
+
+\textbf{Formose reaction conditions} (based on Breslow 1959, Kopetzki \& Antonietti 2011):
+\begin{itemize}
+    \item \textbf{Feedstock}: Formaldehyde (37\% aqueous, diluted to 10--100 mM)
+    \item \textbf{Catalyst}: Ca(OH)$_2$ (5--20 mM) or thiazolium salts for cleaner kinetics
+    \item \textbf{pH}: 10--12 (maintained by catalyst)
+    \item \textbf{Temperature}: 25--60$^\circ$C (higher = faster, but more tar)
+    \item \textbf{Residence time}: 30--120 min (balance between product formation and degradation)
+\end{itemize}
+
+\textbf{Key species to track} (the ``code'' outputs):
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Species} & \textbf{Carbon \#} & \textbf{Role} \\
+\midrule
+Glycolaldehyde & C2 & Autocatalyst, fast \\
+Glyceraldehyde & C3 & Intermediate \\
+Dihydroxyacetone & C3 (isomer) & Intermediate \\
+Erythrose/Erythrulose & C4 & Branch point \\
+Ribose/Ribulose & C5 & Branch point \\
+Glucose/Fructose & C6 & Terminal product \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The code is the \textit{relative concentration vector} of these species at steady state. We expect 5--7 independent output channels (matching simulation's 7 output species).
+
+\subsubsection{Analytical Methods}
+
+\textbf{Primary method}: HPLC with refractive index detection
+\begin{itemize}
+    \item Column: Aminex HPX-87H or equivalent sugar column
+    \item Mobile phase: 5 mM H$_2$SO$_4$, 0.6 mL/min
+    \item Run time: 15 min per sample
+    \item Detection limit: $\sim$0.1 mM for each sugar
+\end{itemize}
+
+\textbf{Sampling}: Automated sampling ports on each chamber, 10 $\mu$L every 10 min. At steady state, sample all 19 chambers simultaneously.
+
+\textbf{Identification}: Initial LC-MS characterization to confirm peak assignments. Once peaks are identified, routine HPLC is sufficient.
+
+\textbf{Data format}: For each trial, output is a 19 $\times$ 7 matrix (chambers $\times$ species). The ``code'' is the mean across chambers, yielding a 7-dimensional output vector per environment.
+
+\subsubsection{Experimental Protocol}
+
+\textbf{Phase 1: Single-chamber characterization} (2 weeks)
+\begin{enumerate}
+    \item Establish formose reaction in single 500 $\mu$L chamber
+    \item Time-resolved HPLC: sample every 5 min for 2 hours
+    \item Identify steady-state window (concentration variance $< 10\%$ over 30 min)
+    \item Test reproducibility: 5 replicates, same conditions
+    \item Establish baseline sugar profile
+\end{enumerate}
+
+\textbf{Phase 2: Coupling characterization} (2 weeks)
+\begin{enumerate}
+    \item Fabricate 2-chamber test chip with connecting channel
+    \item Load different initial conditions in each chamber
+    \item Monitor equilibration time (measures effective $\kappa$)
+    \item Repeat with 25, 50, 100 $\mu$m channels
+    \item Select channel width giving $\kappa \approx 0.1$
+\end{enumerate}
+
+\textbf{Phase 3: Full array validation} (4 weeks)
+\begin{enumerate}
+    \item Fabricate 19-chamber hexagonal array
+    \item Uniform conditions test: all chambers identical
+    \item Verify synchronized steady state (should see uniform output)
+    \item Implement temperature gradient (25--40$^\circ$C across array)
+    \item Implement feedstock gradient (10--100 mM across array)
+    \item Run to steady state, sample all chambers
+\end{enumerate}
+
+\textbf{Phase 4: Code emergence test} (4 weeks)
+\begin{enumerate}
+    \item Define 8 ``environments'': different gradient orientations
+    \begin{itemize}
+        \item E1: Temperature N--S, feedstock E--W
+        \item E2: Temperature N--S, feedstock W--E
+        \item E3: Temperature S--N, feedstock E--W
+        \item ... (8 combinations of gradient directions)
+    \end{itemize}
+    \item For each environment: 5 replicate trials
+    \item Sample steady-state output from all chambers
+    \item Compute mean output vector (the ``code'') for each trial
+\end{enumerate}
+
+\textbf{Phase 5: Analysis}
+\begin{enumerate}
+    \item Compute $D_{\text{eff}}$ across all 40 trials (8 environments $\times$ 5 replicates)
+    \item Leave-one-out decode accuracy: can we identify environment from output?
+    \item Within-environment variance vs. between-environment variance
+    \item Compare to controls (Phase 6)
+\end{enumerate}
+
+\textbf{Phase 6: Controls} (4 weeks)
+\begin{enumerate}
+    \item \textbf{No coupling}: Block channels with wax, repeat Phase 4
+    \item \textbf{Uniform environment}: No gradients, repeat Phase 4
+    \item \textbf{Random chemistry}: Replace formose with non-autocatalytic aldehyde reactions (Cannizzaro only), repeat Phase 4
+    \item \textbf{Equilibrium control}: Run formose until brown (tar formation), sample
+\end{enumerate}
+
+\subsubsection{Expected Results}
+
+Based on simulation predictions:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{$D_{\text{eff}}$} & \textbf{Accuracy} & \textbf{Interpretation} \\
+\midrule
+Formose + coupling + gradient & 1.2--2.0 & 60--80\% & Code emergence \\
+Formose, no coupling & $\approx 1.0$ & 12.5\% (chance) & Independent dynamics \\
+Formose, uniform environment & $\approx 1.0$ & N/A & Single code \\
+Non-autocatalytic control & $\approx 1.0$ & 12.5\% (chance) & No structure \\
+Equilibrium (tar) & $\approx 1.0$ & 12.5\% (chance) & Lost structure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Success criterion}: $D_{\text{eff}} > 1.0$ and decode accuracy significantly above chance (binomial test, $p < 0.05$).
+
+\subsubsection{Challenges and Mitigations}
+
+\textbf{The tar problem}: Formose eventually produces polymeric ``tar.''
+\begin{itemize}
+    \item \textit{Mitigation}: Continuous flow operation (fresh feedstock, product removal). Keep residence time in productive window (30--120 min). Monitor for browning; restart if tar forms.
+\end{itemize}
+
+\textbf{Analytical complexity}: Many isomers, overlapping HPLC peaks.
+\begin{itemize}
+    \item \textit{Mitigation}: We don't need complete speciation. Reproducible peak patterns are sufficient for code detection. Use LC-MS for initial identification only.
+\end{itemize}
+
+\textbf{Reproducibility}: Formose is notoriously condition-sensitive.
+\begin{itemize}
+    \item \textit{Mitigation}: This is a feature, not a bug. Sensitivity to conditions = environmental information is encoded. The question is whether encoding is \textit{reproducible across trials}.
+\end{itemize}
+
+\textbf{Steady-state definition}: System is far from equilibrium.
+\begin{itemize}
+    \item \textit{Mitigation}: Operational definition: variance $< 10\%$ over 30 min observation window. Use time-averaged profiles.
+\end{itemize}
+
+\subsubsection{Alternative Platforms}
+
+If microfluidics proves impractical, alternatives include:
+
+\textbf{Droplet arrays}: Water-in-oil emulsions stabilized by surfactants. Advantages: easy to make thousands, natural coupling via surfactant layer. Disadvantages: hard to sample individual droplets, oil interface may affect chemistry.
+
+\textbf{Vesicle arrays}: Lipid bilayer compartments. Advantages: biologically relevant, semi-permeable membranes. Disadvantages: variable sizes, hard to control, difficult sampling.
+
+\textbf{Parallel flow reactors}: Industrial-scale continuous stirred tanks. Advantages: easy sampling, precise control, large volumes. Disadvantages: expensive, coupling harder to engineer.
+
+\subsubsection{Resource Requirements}
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+\textbf{Item} & \textbf{Estimated Cost} \\
+\midrule
+Microfluidic fabrication (clean room, materials) & \$10,000 \\
+HPLC time (500 samples $\times$ \$20) & \$10,000 \\
+LC-MS characterization & \$5,000 \\
+Consumables (chemicals, chips) & \$10,000 \\
+Personnel (1 postdoc $\times$ 12 months) & \$70,000 \\
+\midrule
+\textbf{Total} & \textbf{\$105,000} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Timeline}: 16 weeks for core experiments (Phases 1--5), plus 4 weeks for controls. Total: 5 months with experienced personnel.
+
+\textbf{Suitable labs}: Any origin-of-life laboratory with microfluidic capabilities. Specific candidates include: Szostak (Harvard), Mansy (Alberta), Huck (Radboud), Cronin (Glasgow), Braun (Munich).
+
+\subsubsection{Implications of Results}
+
+\textbf{If hypothesis confirmed} ($D_{\text{eff}} > 1$, accuracy above chance):
+\begin{itemize}
+    \item First experimental demonstration of spontaneous code emergence from chemistry
+    \item Validates dimensionality threshold as predictive framework
+    \item Shifts origin-of-life question from ``can chemistry produce codes?'' to ``which pathway did Earth take?''
+    \item Provides concrete target for synthetic biology: engineer code-capable chemical systems
+\end{itemize}
+
+\textbf{If hypothesis falsified} ($D_{\text{eff}} \approx 1$ despite optimal conditions):
+\begin{itemize}
+    \item Either simulation oversimplifies formose dynamics, or
+    \item Formose is not sufficient; additional structure required (e.g., templating, compartment selection)
+    \item Would motivate search for alternative chemistries (BZ oscillators, metabolic networks)
+    \item Still valuable: clear negative result with quantitative predictions
+\end{itemize}
+
+Either outcome advances the field by providing the first \textit{quantitative, testable criterion} for code emergence.

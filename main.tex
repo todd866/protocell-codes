@@ -453,6 +453,39 @@ Our framework generates testable predictions:
 \label{fig:bimodality}
 \end{figure}
 
+\subsection{Proposed Experimental Test}
+\label{sec:protocol}
+
+We propose a direct experimental test using microfluidic reactor arrays running formose chemistry. The design follows the simulation geometry: 19 hexagonally-arranged chambers ($\sim$500 $\mu$L each), connected by narrow diffusion channels (50 $\mu$m width), with environmental gradients across the array.
+
+\textbf{Apparatus}: PDMS microfluidic chip with 19 coupled chambers. Temperature gradient (25--40$^\circ$C) via Peltier elements on opposite edges. Formaldehyde concentration gradient (10--100 mM) via programmable syringe pumps. Channel width calibrated to achieve coupling strength $\kappa \approx 0.1$ (matching simulation).
+
+\textbf{Chemistry}: Standard formose conditions (formaldehyde + Ca(OH)$_2$, pH 10--12, 30--120 min residence time). Track 6--7 output species (C2--C6 sugars and isomers) via HPLC with refractive index detection.
+
+\textbf{Protocol}: Define 8 ``environments'' (different gradient orientations). For each: run 5 replicate trials to steady state, sample all chambers, compute mean output vector. Measure $D_{\text{eff}}$ across all trials and leave-one-out decode accuracy.
+
+\textbf{Controls}: (1) Block channels (no coupling), (2) uniform environment (no gradient), (3) non-autocatalytic chemistry (Cannizzaro only), (4) equilibrium/tar state.
+
+\textbf{Predictions}:
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{$D_{\text{eff}}$} & \textbf{Accuracy} & \textbf{Interpretation} \\
+\midrule
+Formose + coupling + gradient & 1.2--2.0 & 60--80\% & Code emergence \\
+Formose, no coupling & $\approx 1.0$ & 12.5\% & Independent dynamics \\
+Formose, uniform environment & $\approx 1.0$ & N/A & Single code \\
+Non-autocatalytic control & $\approx 1.0$ & 12.5\% & No structure \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Success criterion}: $D_{\text{eff}} > 1.0$ and decode accuracy significantly above chance ($p < 0.05$, binomial test).
+
+\textbf{Resources}: Estimated \$100k over 5 months. Any origin-of-life laboratory with microfluidic capabilities could execute this protocol. The key advantage is the binary prediction: either codes emerge or they don't. No ambiguous interpretations.
+
+\textbf{Implications of failure}: If formose fails to cross the threshold under optimal conditions, either (1) the simulation oversimplifies formose dynamics, or (2) additional structure is required (templating, selection). Either outcome advances understanding by providing quantitative negative results.
+
 \subsection{Implications for Origins Research}
 
 If our analysis is correct, the field may need to shift strategy:
