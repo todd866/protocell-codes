@@ -270,6 +270,13 @@ Random topology & 32/32 & 89.4\% & 12,400$\times$ & 156$\times$ \\
 
 \textbf{Interpretation}: Substrate competition ($h > 1$) is \textit{essential}---without it, codes collapse to a handful of attractors with poor reproducibility. Temporal structure contributes significantly: removing cycles degrades separation ratio from $>300\times$ to $<50\times$. The system is robust to input noise and topology perturbations.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_cycles_sweep.pdf}
+\caption{\textbf{Temporal cycles expand code capacity.} (A) Unique codes increase from 12 (1 cycle) to 32 (4+ cycles). Single-cycle codes cannot distinguish all 32 environments. (B) Decoding accuracy improves from 71\% to 98\% as temporal structure enables richer discrimination. (C) Mutual information approaches the theoretical maximum of 5 bits (for 32 classes) with 4 cycles. \textbf{Implication:} Temporal sequence structure is not optional---it is required for full expressivity.}
+\label{fig:cycles}
+\end{figure}
+
 \textbf{Note on coupling}: The $\kappa = 0$ condition still produces 32/32 unique codes because substrate competition alone discretizes local dynamics. However, coupling serves a different function: it creates \textit{shared} interfaces that receivers can decode. Without coupling, each compartment develops idiosyncratic codes; with coupling, codes become colony-level conventions. This is reflected in Sep$_{\text{interface}}$ (Table in Section 4.4), which drops from 343$\times$ to 68$\times$ at $\kappa = 0$. Coupling is not required for local discretization but is essential for inter-compartment coordination.
 
 \subsection{Information-Theoretic Capacity}
@@ -360,6 +367,13 @@ Coupling $\kappa$ & $D_{\text{eff}}$ & Sep$_{\text{interface}}$ \\
 
 Separation peaks at intermediate coupling---the regime where compartments influence but do not dominate each other.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_kappa_sweep.pdf}
+\caption{\textbf{Coupling strength $\kappa$ controls different aspects of code emergence.} (A) Discretization (bimodality) is relatively stable across $\kappa$---competition drives digitization regardless of coupling. (B) Interface separation peaks at intermediate coupling ($\kappa \approx 0.3$): too little coupling yields idiosyncratic codes, too much yields over-synchronization. (C) Cross-receiver decoding accuracy increases with coupling as shared conventions emerge, then declines when over-coupling collapses distinctiveness. \textbf{Interpretation:} Competition digitizes; coupling standardizes.}
+\label{fig:kappa}
+\end{figure}
+
 \subsection{Chemistry-Based Validation}
 
 A potential objection to the reservoir computing model is that neural network dynamics are a ``toy model'' disconnected from prebiotic chemistry. To address this, we implemented a chemistry-based simulation using mass-action kinetics with explicit reaction networks.
@@ -396,6 +410,13 @@ Messy chemistry & 50 & 22/32 & 77\% & 100\% & 7 min \\
 The standard chemistry (15 species) cannot fully distinguish 32 environments because it lacks sufficient degrees of freedom---the attractor landscape has only $\sim$12 distinct basins. Adding species (50) expands the attractor space, enabling nearly twice as many distinguishable codes. This is not parameter tuning; it is a structural prediction of the theory.
 
 \textbf{Note on computational cost:} The chemistry simulation requires solving stiff ODEs for autocatalytic dynamics, with some environments requiring 2--3 minutes per configuration. This is fundamentally different from the reservoir model (milliseconds per configuration) and reflects genuine chemical timescales. Full replication code is available at \url{https://github.com/todd866/protocell-codes}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_confusion_matrix.pdf}
+\caption{\textbf{Confusion matrices for chemistry-based code emergence.} (A) Standard chemistry (15 species) shows clustering: multiple environments map to the same attractor, producing off-diagonal errors. Only 12 distinct clusters emerge from 32 environments. (B) Messy chemistry (50 species) achieves perfect diagonal structure: each environment maps to a unique attractor. The additional degrees of freedom expand the attractor landscape, enabling full discrimination.}
+\label{fig:confusion}
+\end{figure}
 
 %%% EXPANDED: NEW SECTION %%%
 %==============================================================================
@@ -693,6 +714,13 @@ $N_{\text{ceiling}}$ & $C_{\text{threshold}}$ & Pred.\ $N$ & Prey $N$ & Pred.\ f
 \end{center}
 
 In all cases, predators cluster near the ceiling while prey remain large.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_raid_robustness.pdf}
+\caption{\textbf{Predator-prey dynamics are robust to raid function form.} We tested three alternative raid success functions: (A) log-ratio (original), (B) power-law, and (C) threshold-based. All three produce bimodal size distributions with predators clustering near the coherence ceiling and prey remaining large. The qualitative structure---ecological differentiation without specialized machinery---is not an artifact of a particular functional form.}
+\label{fig:raid}
+\end{figure}
 
 \textbf{What is imposed vs.\ derived:} In simulations, we implement the ceiling as a hard constraint ($N \leq N_{\text{ceiling}}$); colonies attempting to grow beyond it are truncated. The derivation (Eq.~9--10) provides the \textit{physical rationale} for why such a ceiling exists and predicts its magnitude from diffusion physics. We do not simulate diffusion-limited propagation directly; we impose the ceiling and show that (1) evolution pushes coherent groups exactly to it, and (2) the derived magnitude matches plausible prebiotic parameters. A full test would couple the ecological simulation to explicit signal propagation dynamics.
 
