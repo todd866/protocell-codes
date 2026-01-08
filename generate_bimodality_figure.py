@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Generate bimodality histogram to show outputs are discretized.
+Generate figure showing discretization via substrate competition.
+Shows winner-take-most dynamics and pattern reproducibility.
 """
 
 import numpy as np
@@ -10,66 +11,94 @@ from chemistry_sim import (
 )
 
 def generate_bimodality_figure():
-    """Generate histogram showing bimodal distribution of boundary signals."""
+    """Generate figure showing discretization via substrate competition."""
 
-    # Run multiple chemistries to collect boundary signal distributions
-    all_signals = []
+    # Collect data across multiple runs
+    winner_margins = []  # max - second_max for each code
+    all_max_values = []
+    all_other_values = []
+    pattern_reproducibility = []
 
-    for seed in range(5):  # 5 random chemistries
+    for seed in range(5):
         array = ChemicalVesicleArray(
             n_rings=2, n_species=20, n_reactions=40,
             n_outputs=8, seed=seed, coupling_strength=0.1,
-            hill_coeff=1.0, s0=1.0  # Using h=1 as per ablation findings
+            hill_coeff=1.0, s0=1.0
         )
 
         for env_id in range(16):
             env_inputs = create_spatial_gradient(array.coords, env_id)
-            code, trajectory = array.run(env_inputs, t_span=(0, 50), n_points=200,
-                                        trial_seed=seed * 1000 + env_id)
 
-            # Collect the boundary signals (steady-state values)
-            # These are after substrate competition normalization
-            all_signals.extend(code.flatten())
+            # Run multiple trials for same environment to check reproducibility
+            trial_codes = []
+            for trial in range(3):
+                code, _ = array.run(env_inputs, t_span=(0, 50), n_points=200,
+                                   trial_seed=seed * 10000 + env_id * 100 + trial)
+                trial_codes.append(code)
 
-    all_signals = np.array(all_signals)
+                # Code is 1D array of output channel values (colony average)
+                sorted_outputs = np.sort(code)[::-1]
+                margin = sorted_outputs[0] - sorted_outputs[1]
+                winner_margins.append(margin)
+                all_max_values.append(sorted_outputs[0])
+                all_other_values.extend(sorted_outputs[1:])
 
-    # Create the figure
+            # Check reproducibility: do trials produce same winner pattern?
+            for i in range(len(trial_codes)):
+                for j in range(i+1, len(trial_codes)):
+                    code1 = trial_codes[i]
+                    code2 = trial_codes[j]
+                    # Compare winner indices
+                    winner1 = np.argmax(code1)
+                    winner2 = np.argmax(code2)
+                    match = 1.0 if winner1 == winner2 else 0.0
+                    pattern_reproducibility.append(match)
+
+    winner_margins = np.array(winner_margins)
+    all_max_values = np.array(all_max_values)
+    all_other_values = np.array(all_other_values)
+
+    # Create figure
     fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 
-    # Panel A: Histogram of raw values
+    # Panel A: Winner vs Losers distribution
     ax = axes[0]
-    ax.hist(all_signals, bins=50, density=True, alpha=0.7, color='#1f77b4', edgecolor='black')
-    ax.axvline(0.5, color='red', linestyle='--', linewidth=2, label='High/Low boundary')
-    ax.set_xlabel('Normalized Output Value', fontsize=11)
+    bins = np.linspace(0, max(all_max_values.max(), all_other_values.max()) * 1.1, 40)
+    ax.hist(all_max_values, bins=bins, density=True, alpha=0.7,
+            color='#d62728', edgecolor='black', label='Winners (max channel)')
+    ax.hist(all_other_values, bins=bins, density=True, alpha=0.5,
+            color='#1f77b4', edgecolor='black', label='Losers (other channels)')
+    ax.set_xlabel('Output Value (after substrate competition)', fontsize=11)
     ax.set_ylabel('Density', fontsize=11)
-    ax.set_title('(A) Output Distribution After\nSubstrate Competition', fontsize=12, fontweight='bold')
-    ax.legend()
+    ax.set_title('(A) Winner-Take-Most Dynamics', fontsize=12, fontweight='bold')
+    ax.legend(loc='upper right', fontsize=9)
 
-    # Compute saturation ratio
-    saturated = np.sum(np.abs(all_signals - 0.5) > 0.3) / len(all_signals)
-    ax.text(0.05, 0.95, f'Saturated: {saturated*100:.0f}%\n(values near 0 or 1)',
-            transform=ax.transAxes, fontsize=10, verticalalignment='top',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+    # Compute separation
+    winner_mean = np.mean(all_max_values)
+    loser_mean = np.mean(all_other_values)
+    separation = winner_mean / (loser_mean + 1e-10)
+    ax.text(0.95, 0.65, f'Winner mean: {winner_mean:.3f}\nLoser mean: {loser_mean:.3f}\nSeparation: {separation:.1f}×',
+            transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
-    # Panel B: Histogram of centered/signed values (what we use for "bits")
-    centered = all_signals - np.mean(all_signals)
-
+    # Panel B: Winner margin distribution
     ax = axes[1]
-    ax.hist(centered, bins=50, density=True, alpha=0.7, color='#2ca02c', edgecolor='black')
-    ax.axvline(0, color='red', linestyle='--', linewidth=2, label='Zero (bit boundary)')
-
-    # Compute bimodality metrics
-    positive = np.sum(centered > 0.05) / len(centered)
-    negative = np.sum(centered < -0.05) / len(centered)
-    middle = np.sum(np.abs(centered) <= 0.05) / len(centered)
-
-    ax.set_xlabel('Centered Output Value (deviation from mean)', fontsize=11)
+    ax.hist(winner_margins, bins=40, density=True, alpha=0.7,
+            color='#2ca02c', edgecolor='black')
+    median_margin = np.median(winner_margins)
+    ax.axvline(median_margin, color='red', linestyle='--', linewidth=2,
+               label=f'Median: {median_margin:.3f}')
+    ax.set_xlabel('Winner Margin (max − 2nd max)', fontsize=11)
     ax.set_ylabel('Density', fontsize=11)
-    ax.set_title('(B) Mean-Centered Distribution\n(Bit = sign of value)', fontsize=12, fontweight='bold')
-    ax.legend()
-    ax.text(0.05, 0.95, f'Positive: {positive*100:.0f}%\nNegative: {negative*100:.0f}%\nTransition: {middle*100:.0f}%',
-            transform=ax.transAxes, fontsize=10, verticalalignment='top',
-            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+    ax.set_title('(B) Discretization Strength', fontsize=12, fontweight='bold')
+    ax.legend(loc='upper right', fontsize=9)
+
+    # Compute discretization metrics
+    clear_winners = np.sum(winner_margins > 0.01) / len(winner_margins)
+    repro_mean = np.mean(pattern_reproducibility)
+    ax.text(0.95, 0.65, f'Clear winners: {clear_winners*100:.0f}%\n(margin > 0.01)\n\nWinner reproducibility:\n{repro_mean*100:.0f}% across trials',
+            transform=ax.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
     plt.tight_layout()
     plt.savefig('figures/fig_bimodality.pdf', dpi=300, bbox_inches='tight')
@@ -77,16 +106,14 @@ def generate_bimodality_figure():
     print("Saved figures/fig_bimodality.pdf")
     plt.close()
 
-    # Also compute Sarle's bimodality coefficient
-    from scipy import stats as sp_stats
-    n = len(centered)
-    skewness = sp_stats.skew(centered)
-    kurtosis = sp_stats.kurtosis(centered, fisher=False)  # Excess kurtosis
-    BC = (skewness**2 + 1) / kurtosis
-    print(f"\nBimodality coefficient (Sarle's BC): {BC:.3f}")
-    print(f"  BC > 0.555 indicates bimodality")
-    print(f"  Saturation ratio: {saturated*100:.1f}%")
-    print(f"  Transition zone occupancy: {middle*100:.1f}%")
+    # Print summary stats
+    print(f"\nDiscretization metrics:")
+    print(f"  Winner mean: {winner_mean:.4f}")
+    print(f"  Loser mean: {loser_mean:.4f}")
+    print(f"  Separation ratio: {separation:.1f}×")
+    print(f"  Median winner margin: {median_margin:.4f}")
+    print(f"  Clear winners (margin > 0.01): {clear_winners*100:.1f}%")
+    print(f"  Winner reproducibility: {repro_mean*100:.1f}%")
 
 if __name__ == '__main__':
     generate_bimodality_figure()

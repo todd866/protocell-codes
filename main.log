@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  7 JAN 2026 20:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.11.12)  8 JAN 2026 11:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -452,12 +452,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
                                                   \__shipout_drop_firstpage_...
 l.201 
       ]
-<figures/fig_confusion_matrix.pdf, id=202, 849.82031pt x 379.01273pt>
+<figures/fig_confusion_matrix.pdf, id=206, 849.55687pt x 378.86818pt>
 File: figures/fig_confusion_matrix.pdf Graphic file (type pdf)
 <use figures/fig_confusion_matrix.pdf>
 Package pdftex.def Info: figures/fig_confusion_matrix.pdf  used on input line 2
 04.
-(pdftex.def)             Requested size: 469.75502pt x 209.5044pt.
+(pdftex.def)             Requested size: 469.75502pt x 209.49388pt.
 
 
 [6
@@ -473,7 +473,7 @@ s been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.219 
        <./figures/fig_confusion_matrix.pdf>]
-<figures/fig_ensemble_scatter.pdf, id=282, 570.62997pt x 425.22049pt>
+<figures/fig_ensemble_scatter.pdf, id=286, 570.62997pt x 425.22049pt>
 File: figures/fig_ensemble_scatter.pdf Graphic file (type pdf)
 <use figures/fig_ensemble_scatter.pdf>
 Package pdftex.def Info: figures/fig_ensemble_scatter.pdf  used on input line 2
@@ -524,11 +524,11 @@ l.416
       ]
 
 [13]
-<figures/fig_bimodality.pdf, id=423, 715.61292pt x 281.10571pt>
+<figures/fig_bimodality.pdf, id=427, 715.61292pt x 281.40886pt>
 File: figures/fig_bimodality.pdf Graphic file (type pdf)
 <use figures/fig_bimodality.pdf>
 Package pdftex.def Info: figures/fig_bimodality.pdf  used on input line 451.
-(pdftex.def)             Requested size: 469.75502pt x 184.53093pt.
+(pdftex.def)             Requested size: 469.75502pt x 184.72992pt.
 
 
 [14
@@ -556,24 +556,14 @@ Overfull \hbox (20.258pt too wide) in paragraph at lines 532--533
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 93581388B8A3870074C3A96EE27BAE8A;5912
-(rerunfilecheck)             After:  58911FF6C0FA8DE2C11C003B59230E95;6106.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 58911FF6C0FA8DE2C11C003B59230E95;6106.
  ) 
 Here is how much of TeX's memory you used:
- 10978 strings out of 474662
- 167138 string characters out of 5751108
- 580752 words of memory out of 5000000
- 33787 multiletter control sequences out of 15000+600000
+ 10979 strings out of 474662
+ 167154 string characters out of 5751108
+ 580809 words of memory out of 5000000
+ 33788 multiletter control sequences out of 15000+600000
  572453 words of font info for 87 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  75i,13n,79p,903b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -599,10 +589,10 @@ local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb></
 usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/symbols/msam
 10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/amsfonts/sym
 bols/msbm10.pfb>
-Output written on main.pdf (18 pages, 351510 bytes).
+Output written on main.pdf (18 pages, 351512 bytes).
 PDF statistics:
- 649 PDF objects out of 1000 (max. 8388607)
- 388 compressed objects within 4 object streams
+ 650 PDF objects out of 1000 (max. 8388607)
+ 391 compressed objects within 4 object streams
  98 named destinations out of 1000 (max. 500000)
- 280 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 288 words of extra memory for PDF output out of 10000 (max. 10000000)
 
