@@ -41,8 +41,11 @@ python code/generate_bimodality_figure.py
 
 **Status:** Submitted (January 8, 2026)
 
+**Mathematical foundation:**
+- [Manifold Expansion via Coupling](https://github.com/todd866/manifold-expansion) — Proves Fisher rank increases under coupling (the formal basis for why D_eff > 1 enables code emergence)
+
 **Related:**
-- [HeroX Evolution 2.0 Submission](https://github.com/todd866/evolution2-prize) - Prize competition entry
+- [HeroX Evolution 2.0 Submission](https://github.com/todd866/evolution2-prize) — Prize competition entry
 
 ## Files
 
