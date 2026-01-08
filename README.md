@@ -39,7 +39,7 @@ python code/generate_bimodality_figure.py
 
 **Target Journal:** Discover Life (Springer)
 
-**Status:** In preparation
+**Status:** Submitted (January 8, 2026)
 
 **Related:**
 - [HeroX Evolution 2.0 Submission](https://github.com/todd866/evolution2-prize) - Prize competition entry
