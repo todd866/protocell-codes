@@ -24,13 +24,13 @@ D_eff = (Σλ)² / Σ(λ²)    # Participation ratio of output eigenvalues
 
 ```bash
 # Main simulation
-python chemistry_sim.py --compare    # 15 vs 50 species comparison
-python chemistry_sim.py --timescale  # Test timescale separation
-python chemistry_sim.py --full       # Full 32-environment test
+python code/chemistry_sim.py --compare    # 15 vs 50 species comparison
+python code/chemistry_sim.py --timescale  # Test timescale separation
+python code/chemistry_sim.py --full       # Full 32-environment test
 
 # Generate figures
-python generate_figure.py
-python generate_bimodality_figure.py
+python code/generate_figure.py
+python code/generate_bimodality_figure.py
 ```
 
 ## Paper
@@ -43,7 +43,6 @@ python generate_bimodality_figure.py
 
 **Related:**
 - [HeroX Evolution 2.0 Submission](https://github.com/todd866/evolution2-prize) - Prize competition entry
-- Patent filed: AU 2026900167 (January 8, 2026)
 
 ## Files
 
@@ -51,8 +50,9 @@ python generate_bimodality_figure.py
 |------|-------------|
 | `main.tex` / `main.pdf` | Paper manuscript |
 | `cover_letter.tex` | Journal cover letter |
-| `chemistry_sim.py` | Core simulation (mass-action ODEs) |
-| `generate_figure.py` | Figure generation |
+| `code/chemistry_sim.py` | Core simulation (mass-action ODEs) |
+| `code/generate_figure.py` | Figure generation |
+| `code/ensemble_sweep.py` | Parameter sweeps |
 | `figures/` | Output figures |
 
 ## Citation
